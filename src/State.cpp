@@ -1,10 +1,13 @@
 #include "../include/State.h"
 
-State::State() : bg(), quitRequested(false) {
+State::State() : bg(),music(), quitRequested(false) {
+    LoadAssets();
+    music.Play(-1);
 }
 
 void State::LoadAssets(){
-    bg.Open("../Recursos/img/Background.png");
+    bg.Open("Recursos/img/Background.png");
+    music.Open("Recursos/audio/BGM.wav");
 }
 
 void State::Update(float dt){

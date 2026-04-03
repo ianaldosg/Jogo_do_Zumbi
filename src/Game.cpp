@@ -63,9 +63,13 @@ Game::Game(std::string title, int width, int height) {
         exit(1);
     }
 
+    state = new State();
+
 }
 
 Game::~Game(){
+    delete state;
+
     if (renderer != nullptr) {
         SDL_DestroyRenderer(renderer);
         renderer = nullptr;
@@ -97,11 +101,11 @@ SDL_Renderer* Game::GetRenderer() {
 }
 
 void Game::Run(){
-    State state;
 
-    while (!state.QuitRequested()){
-        state.Update(0);
-        state.Render();
+    while (!state->QuitRequested()){
+        SDL_RenderClear(renderer);
+        state->Update(0);
+        state->Render();
         SDL_RenderPresent(renderer);
         SDL_Delay(16);
 
