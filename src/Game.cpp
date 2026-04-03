@@ -1,9 +1,13 @@
-#define INCLUDE_SDL_IMAGE
-#define INCLUDE_SDL_MIXER
-
 #include "../include/Game.h"
 
 Game* Game::instance = nullptr;
+
+Game& Game::GetInstance(){
+    if (instance == nullptr){
+        instance = new Game("Ian Aldo SerwY Gonzale 242039176",1200,900);
+    }
+    return *instance;
+}
 
 Game::Game(std::string title, int width, int height) {
     if (instance != nullptr){
@@ -83,12 +87,6 @@ Game::~Game(){
     std::cout << "Jogo Encerrado!" << std::endl;
 }
 
-Game& Game::GetInstance(std::string title, int width, int height){
-    if (instance == nullptr){
-        instance = new Game(title, width, height);
-    }
-    return *instance;
-}
 
 State& Game::GetState(){
     return *state;

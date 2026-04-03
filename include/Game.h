@@ -1,4 +1,6 @@
 #define INCLUDE_SDL
+#define INCLUDE_SDL_IMAGE
+#define INCLUDE_SDL_MIXER
 
 #include "SDL_include.h"
 #include "State.h"
@@ -7,7 +9,8 @@
 
 class Game {
 public:
-    static Game& GetInstance(std::string title, int width, int height); 
+    static Game& GetInstance(); 
+    static Game& GetInstance(std::string title, int width, int height);
     ~Game();
     State& GetState();
     SDL_Renderer* GetRenderer();
