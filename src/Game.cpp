@@ -99,6 +99,15 @@ SDL_Renderer* Game::GetRenderer() {
 }
 
 void Game::Run(){
-    std::cout << "Rodando..." << std::endl;
+    State state;
+
+    while (!state.QuitRequested()){
+        state.Update(0);
+        state.Render();
+        SDL_RenderPresent(renderer);
+        SDL_Delay(16);
+
+    }
 }
+
 
