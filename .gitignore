@@ -33,6 +33,7 @@
 *.lib
 
 # Executables
+jogo
 game
 *.exe
 *.out
