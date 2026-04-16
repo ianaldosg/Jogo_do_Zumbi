@@ -21,4 +21,7 @@ public:
     float Angulo(const Vec2& v) const;
 
     Vec2 Rotacao(float angulo) const;
+
+    Vec2& operator+=(const Vec2& v);
+    Vec2& operator-=(const Vec2& v);
 };
