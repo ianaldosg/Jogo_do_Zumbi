@@ -1,9 +1,13 @@
 #include "../include/State.h"
+#include "../include/SpriteRenderer.h"
 
 State::State() : quitRequested(false) {
     LoadAssets();
 
     GameObject* bg = new GameObject();
+    bg->AddComponent(
+            new SpriteRenderer(*bg, "Recursos/img/Background.png")
+                );
     AddObject(bg);
 
     music.Play(-1);
@@ -35,7 +39,7 @@ void State::Update(float dt){
 }
 
 void State::Render(){
-    bg.Render(0,0);
+    //bg.Render(0,0);
     
     for (auto& obj : objectArray) {
         obj->Render();
