@@ -10,7 +10,7 @@ public:
     Rect operator+(const Vec2& v) const;
 
     Vec2 GetCentroRect() const;
-    float DistanciaCentro(const Rect& other) const;
+    float DistanciaCentro(const Rect& other) const; 
     bool Contains(const Vec2& point) const;
 
 };

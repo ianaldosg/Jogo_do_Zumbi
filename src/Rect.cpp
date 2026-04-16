@@ -1,5 +1,8 @@
 #include "../include/Rect.h"
 
+Rect::Rect(float x, float y, float w, float h)
+    : x(x), y(y), w(w), h(h) {}
+
 Rect Rect::operator+(const Vec2& v) const {
     return Rect(x + v.x, y + v.y, w, h);
 }
