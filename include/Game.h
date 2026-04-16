@@ -2,6 +2,7 @@
 #define INCLUDE_SDL_IMAGE
 #define INCLUDE_SDL_MIXER
 
+#pragma once
 #include "SDL_include.h"
 #include "State.h"
 #include <iostream>

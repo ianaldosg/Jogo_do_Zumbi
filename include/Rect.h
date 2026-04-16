@@ -1,3 +1,4 @@
+#pragma once
 #include "SDL_include.h"
 #include "Vec2.h"
 
