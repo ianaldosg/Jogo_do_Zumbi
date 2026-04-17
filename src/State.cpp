@@ -1,16 +1,27 @@
 #include "../include/State.h"
-#include "../include/SpriteRenderer.h"
 
 State::State() : quitRequested(false) {
     LoadAssets();
 
+    //Criando Imagem
     GameObject* bg = new GameObject();
     bg->AddComponent(
             new SpriteRenderer(*bg, "Recursos/img/Background.png")
                 );
     AddObject(bg);
 
+    //Criando Musica
     music.Play(-1);
+
+    //Criando Zumbi
+    GameObject* zombie = new GameObject();
+    
+    zombie->box.x = 600;
+    zombie->box.y = 450;
+
+    zombie->AddComponent(new Zombie(*zombie));
+
+    AddObject(zombie);
 }
 
 State::~State() {

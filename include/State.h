@@ -5,6 +5,8 @@
 #include "Sprite.h"
 #include "Music.h"
 #include "GameObject.h"
+#include "SpriteRenderer.h"
+#include "Zombie.h"
 #include <vector>
 #include <memory>
 
