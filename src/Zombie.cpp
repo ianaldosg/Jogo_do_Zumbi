@@ -9,19 +9,28 @@ Zombie::Zombie(GameObject& associated)
                 3, 2
                 );
 
-        sr->SetFrame(1);
-
         associated.AddComponent(sr);
+
+        //Animações Zombie
+        Animator* anim = new Animator(associated);
+
+        anim->AddAnimation("walking", Animation(0, 3, 0.1));
+        anim->AddAnimation("dead", Animation(5, 5, 0));
+
+        anim->SetAnimation("walking");
+
+        associated.AddComponent(anim);
 }
 
 void Zombie::Damage(int damage) {
     hitpoins -= damage;
 
     if (hitpoins <= 0) {
-        SpriteRenderer* sr = 
-            (SpriteRenderer*) associated.GetComponent<SpriteRenderer>();
-        if (sr != nullptr) {
-            sr->SetFrame(5);
+        Animator* anim =
+            (Animator*) associated.GetComponent<Animator>();
+
+        if (anim != nullptr) {
+            anim->SetAnimation("dead");
         }
     }
 }

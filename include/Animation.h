@@ -3,11 +3,11 @@
 
 class Animation{
     public:
+        Animation();
         Animation(int frameStart,
                 int frameEnd,
                 float frameTime);
 
-    private:
         int frameStart;
         int frameEnd;
         float frameTime;
