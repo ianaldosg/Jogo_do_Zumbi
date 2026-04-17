@@ -1,3 +1,4 @@
+#pragma once
 #include "SDL_include.h"
 #include "Component.h"
 #include "Animation.h"
