@@ -1,4 +1,6 @@
 #include "../include/State.h"
+#include "../include/SpriteRenderer.h"
+#include "../include/Sprite.h"
 
 State::State() : quitRequested(false) {
     LoadAssets();
@@ -14,15 +16,16 @@ State::State() : quitRequested(false) {
     music.Play(-1);
 
     //Criando Zumbi
-    GameObject* zombie = new GameObject();
-    
-    zombie->box.x = 600;
-    zombie->box.y = 450;
+    for (int i = 0; i < 5; i++) {
+        GameObject* zombie = new GameObject();
 
-    zombie->AddComponent(new Zombie(*zombie));
+        zombie->box.x = 300 + i * 120;
+        zombie->box.y = 450;
 
-    AddObject(zombie);
+        zombie->AddComponent(new Zombie(*zombie));
 
+        AddObject(zombie);
+    }
     //Criando TileMap
     GameObject* mapObject = new GameObject();
 

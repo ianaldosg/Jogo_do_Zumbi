@@ -2,7 +2,6 @@
 #include "SDL_include.h"
 #include "Component.h"
 #include "Animation.h"
-#include "SpriteRenderer.h"
 #include "GameObject.h"
 #include <unordered_map>
 #include <string>

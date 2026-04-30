@@ -1,4 +1,5 @@
 #include "../include/Sound.h"
+#include "../include/Resources.h"
 
 Sound::Sound() {
     chunk = nullptr;
@@ -21,7 +22,7 @@ void Sound::Stop() {
 }
 
 void Sound::Open(std::string file) {
-    chunk = Mix_LoadWAV(file.c_str());
+    chunk = Resources::GetSound(file);
 
     if (chunk == nullptr) {
         printf("Erro ao carregar som: %s\n", Mix_GetError());

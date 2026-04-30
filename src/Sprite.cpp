@@ -1,5 +1,6 @@
 #include "../include/Sprite.h"
 #include "../include/Game.h"
+#include "../include/Resources.h"
 
 Sprite::Sprite() 
     : texture(nullptr), 
@@ -13,23 +14,13 @@ Sprite::Sprite(std::string file, int frameCountW, int frameCountH)
     Open(file);
 }
 
-Sprite::~Sprite(){
-    if (texture != nullptr){
-        SDL_DestroyTexture(texture);
-    }
-}
+Sprite::~Sprite(){}
 
 void Sprite::Open(std::string file){
-    if (texture != nullptr){
-        SDL_DestroyTexture(texture);
-        texture = nullptr;
-    }
+    texture = Resources::GetImage(file);
 
-    texture = IMG_LoadTexture(Game::GetInstance().GetRenderer(), file.c_str()); 
-
-    if (texture == nullptr) {
-        std::cout << "Erro ao carregar texture: " << SDL_GetError() << std::endl;
-        return;
+    if (texture == nullptr){
+        printf("Erro ao carregar imagem: %s\n", SDL_GetError());
     }
 
     SDL_QueryTexture(texture, nullptr, nullptr, &width, &height);

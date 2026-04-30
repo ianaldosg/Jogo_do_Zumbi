@@ -1,4 +1,5 @@
 #include "../include/Game.h"
+#include "../include/Resources.h"
 
 Game* Game::instance = nullptr;
 
@@ -108,8 +109,11 @@ void Game::Run(){
         state->Render();
         SDL_RenderPresent(renderer);
         SDL_Delay(16);
-
     }
+
+    Resources::ClearImages();
+    Resources::ClearMusic();
+    Resources::ClearSounds();
 }
 
 

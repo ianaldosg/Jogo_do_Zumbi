@@ -1,8 +1,6 @@
 #include "SDL_include.h"
 #include "Component.h"
-#include "SpriteRenderer.h"
 #include "GameObject.h"
-#include "Animator.h"
 #include "Sound.h"
 
 class Zombie : public Component{

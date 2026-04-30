@@ -1,4 +1,6 @@
 #include "../include/Zombie.h"
+#include "../include/SpriteRenderer.h"
+#include "../include/Animator.h"
 
 Zombie::Zombie(GameObject& associated) 
     : Component(associated), hitpoins(100), deathSound("Recursos/audio/Dead.wav"){

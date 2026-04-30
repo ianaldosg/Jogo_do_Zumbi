@@ -1,8 +1,8 @@
 #pragma once
 #include "SDL_include.h"
-#include <vector>
 #include "Component.h"
 #include "Rect.h"
+#include <vector>
 
 class GameObject{
     public:

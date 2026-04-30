@@ -2,10 +2,8 @@
 
 #pragma once
 #include "SDL_include.h"
-#include "Sprite.h"
 #include "Music.h"
 #include "GameObject.h"
-#include "SpriteRenderer.h"
 #include "Zombie.h"
 #include "TileMap.h"
 #include <vector>
