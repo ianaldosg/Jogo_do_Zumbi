@@ -22,6 +22,20 @@ State::State() : quitRequested(false) {
     zombie->AddComponent(new Zombie(*zombie));
 
     AddObject(zombie);
+
+    //Criando TileMap
+    GameObject* mapObject = new GameObject();
+
+    TileSet* tileSet = new TileSet(64, 64, "Recursos/img/Tileset.png");
+
+    TileMap* tileMap = new TileMap(*mapObject, "Recursos/map/map.txt", tileSet);
+
+    mapObject-> AddComponent(tileMap);
+
+    mapObject->box.x = 0;
+    mapObject->box.y = 0;
+
+    AddObject(mapObject);
 }
 
 State::~State() {

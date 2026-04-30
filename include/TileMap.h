@@ -19,6 +19,7 @@ class TileMap : public Component {
 
         void Render();
         void RenderLayer(int layer);
+        void Update(float dt);
 
         int GetWidth();
         int GetHeight();

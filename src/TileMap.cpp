@@ -63,3 +63,7 @@ void TileMap::Render() {
     int TileMap::GetDepth(){
         return mapDepth;
     }
+
+void TileMap::Update(float dt){
+
+}
