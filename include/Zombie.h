@@ -3,6 +3,7 @@
 #include "SpriteRenderer.h"
 #include "GameObject.h"
 #include "Animator.h"
+#include "Sound.h"
 
 class Zombie : public Component{
     public:
@@ -12,6 +13,8 @@ class Zombie : public Component{
 
         void Update(float dt);
         void Render();
+
+        Sound deathSound;
 
     private:
         int hitpoins;

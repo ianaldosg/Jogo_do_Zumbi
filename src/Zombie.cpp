@@ -1,7 +1,7 @@
 #include "../include/Zombie.h"
 
 Zombie::Zombie(GameObject& associated) 
-    : Component(associated), hitpoins(100){
+    : Component(associated), hitpoins(100), deathSound("Recursos/audio/Dead.wav"){
 
         SpriteRenderer* sr = new SpriteRenderer(
                 associated,
@@ -23,6 +23,8 @@ Zombie::Zombie(GameObject& associated)
 }
 
 void Zombie::Damage(int damage) {
+    if (hitpoins <= 0) return;
+
     hitpoins -= damage;
 
     if (hitpoins <= 0) {
@@ -32,6 +34,8 @@ void Zombie::Damage(int damage) {
         if (anim != nullptr) {
             anim->SetAnimation("dead");
         }
+
+        deathSound.Play(1);
     }
 }
 
