@@ -1,9 +1,10 @@
 #include "../include/Zombie.h"
 #include "../include/SpriteRenderer.h"
 #include "../include/Animator.h"
+#include "../include/InputManager.h"
 
 Zombie::Zombie(GameObject& associated) 
-    : Component(associated), hitpoins(100), deathSound("Recursos/audio/Dead.wav"){
+    : Component(associated), hitpoins(100),hitSound("Recursos/audio/Hit0.wav"), deathSound("Recursos/audio/Dead.wav"){
 
         SpriteRenderer* sr = new SpriteRenderer(
                 associated,
@@ -25,9 +26,12 @@ Zombie::Zombie(GameObject& associated)
 }
 
 void Zombie::Damage(int damage) {
+    //Parada do loop
     if (hitpoins <= 0) return;
 
     hitpoins -= damage;
+
+    hitSound.Play(1);
 
     if (hitpoins <= 0) {
         Animator* anim =
@@ -42,7 +46,18 @@ void Zombie::Damage(int damage) {
 }
 
 void Zombie::Update(float dt) {
-    Damage(1);
+    InputManager& input = InputManager::GetInstance();
+
+    //Dano ao Cliclar
+    if (input.MousePress(LEFT_MOUSE_BUTTON)) {
+
+        int mouseX = input.GetMouseX();
+        int mouseY = input.GetMouseY();
+
+        if (associated.box.Contains(Vec2(mouseX, mouseY))) {
+            Damage(1);
+        }
+    }
 }
 
 void Zombie::Render() {

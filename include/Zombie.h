@@ -13,6 +13,7 @@ class Zombie : public Component{
         void Render();
 
         Sound deathSound;
+        Sound hitSound;
 
     private:
         int hitpoins;

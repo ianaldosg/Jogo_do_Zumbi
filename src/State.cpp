@@ -1,6 +1,7 @@
 #include "../include/State.h"
 #include "../include/SpriteRenderer.h"
 #include "../include/Sprite.h"
+#include "../include/InputManager.h"
 
 State::State() : quitRequested(false) {
     LoadAssets();
@@ -15,17 +16,6 @@ State::State() : quitRequested(false) {
     //Criando Musica
     music.Play(-1);
 
-    //Criando Zumbi
-    for (int i = 0; i < 5; i++) {
-        GameObject* zombie = new GameObject();
-
-        zombie->box.x = 300 + i * 120;
-        zombie->box.y = 450;
-
-        zombie->AddComponent(new Zombie(*zombie));
-
-        AddObject(zombie);
-    }
     //Criando TileMap
     GameObject* mapObject = new GameObject();
 
@@ -51,6 +41,27 @@ void State::LoadAssets(){
 }
 
 void State::Update(float dt){
+
+    InputManager& input = InputManager::GetInstance();
+
+    if (input.KeyPress(ESCAPE_KEY) || input.QuitRequested()) {
+        quitRequested = true;
+    }
+
+    //Criando Zumbi
+    if (input.KeyPress(SDLK_SPACE)) {
+        GameObject* zombieGO = new GameObject();
+
+        Zombie* zombie = new Zombie(*zombieGO);
+        zombieGO->AddComponent(zombie);
+
+        zombieGO->box.x = input.GetMouseX();
+        zombieGO->box.y = input.GetMouseY();
+
+        AddObject(zombieGO);
+    }
+
+    //Atualiza Objetos
     for (int i = 0; i < objectArray.size(); i++) {
         objectArray[i]->Update(dt);
     }
@@ -59,10 +70,6 @@ void State::Update(float dt){
         if (objectArray[i]->IsDead()) {
             objectArray.erase(objectArray.begin() + i);
         }
-    }
-
-    if (SDL_QuitRequested()) {
-        quitRequested = true;
     }
 }
 
