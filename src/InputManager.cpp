@@ -90,3 +90,6 @@ int InputManager::GetMouseY(){
 bool InputManager::QuitRequested(){
     return quitRequested;
 }
+
+InputManager::~InputManager(){
+}

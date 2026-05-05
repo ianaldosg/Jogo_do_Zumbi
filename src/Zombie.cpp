@@ -55,7 +55,7 @@ void Zombie::Update(float dt) {
         int mouseY = input.GetMouseY();
 
         if (associated.box.Contains(Vec2(mouseX, mouseY))) {
-            Damage(1);
+            Damage(20);
         }
     }
 }

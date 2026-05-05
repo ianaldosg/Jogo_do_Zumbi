@@ -55,8 +55,8 @@ void State::Update(float dt){
         Zombie* zombie = new Zombie(*zombieGO);
         zombieGO->AddComponent(zombie);
 
-        zombieGO->box.x = input.GetMouseX();
-        zombieGO->box.y = input.GetMouseY();
+        zombieGO->box.x = input.GetMouseX() - (zombieGO->box.w /2);
+        zombieGO->box.y = input.GetMouseY() - (zombieGO->box.h /2);
 
         AddObject(zombieGO);
     }
