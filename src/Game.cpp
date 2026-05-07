@@ -89,6 +89,10 @@ float Game::GetDeltaTime(){
 Game::~Game(){
     delete state;
 
+    Resources::ClearImages();
+    Resources::ClearMusic();
+    Resources::ClearSounds();
+
     if (renderer != nullptr) {
         SDL_DestroyRenderer(renderer);
         renderer = nullptr;
@@ -126,7 +130,7 @@ void Game::Run(){
 
         InputManager::GetInstance().Update();
 
-        state->Update(0);
+        state->Update(GetDeltaTime());
 
         SDL_RenderClear(renderer);
         state->Render();
@@ -134,10 +138,6 @@ void Game::Run(){
 
         SDL_Delay(16);
     }
-
-    Resources::ClearImages();
-    Resources::ClearMusic();
-    Resources::ClearSounds();
 }
 
 

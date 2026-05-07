@@ -12,7 +12,7 @@ Animator::Animator(GameObject& associated)
 void Animator::Update(float dt) {
     if (frameTime == 0) return;
 
-    timeElapsed += 0.01;
+    timeElapsed += dt;
 
     if (timeElapsed > frameTime){
         timeElapsed -= frameTime;

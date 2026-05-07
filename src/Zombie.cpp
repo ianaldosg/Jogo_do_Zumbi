@@ -4,7 +4,7 @@
 #include "../include/InputManager.h"
 
 Zombie::Zombie(GameObject& associated) 
-    : Component(associated), hitpoins(100),hitSound("Recursos/audio/Hit0.wav"), deathSound("Recursos/audio/Dead.wav"){
+    : Component(associated), hitpoins(100),hit(false),dead(false),hitSound("Recursos/audio/Hit0.wav"), deathSound("Recursos/audio/Dead.wav"){
 
         SpriteRenderer* sr = new SpriteRenderer(
                 associated,
@@ -17,7 +17,8 @@ Zombie::Zombie(GameObject& associated)
         //Animações Zombie
         Animator* anim = new Animator(associated);
 
-        anim->AddAnimation("walking", Animation(0, 3, 0.1));
+        anim->AddAnimation("walking", Animation(0, 3, 0.2f));
+        anim->AddAnimation("hit", Animation(4,4,0));
         anim->AddAnimation("dead", Animation(5, 5, 0));
 
         anim->SetAnimation("walking");
@@ -26,27 +27,65 @@ Zombie::Zombie(GameObject& associated)
 }
 
 void Zombie::Damage(int damage) {
-    //Parada do loop
-    if (hitpoins <= 0) return;
 
     hitpoins -= damage;
 
-    hitSound.Play(1);
-
     if (hitpoins <= 0) {
+        dead = true;
+
+        deathSound.Play(1);
+
+        deathTimer.Restart();
+
         Animator* anim =
             (Animator*) associated.GetComponent<Animator>();
 
         if (anim != nullptr) {
             anim->SetAnimation("dead");
         }
+    }
+    else {
+        hit = true;
 
-        deathSound.Play(1);
+        hitSound.Play(1);
+
+        hitTimer.Restart();
+
+        Animator* anim =
+            (Animator*) associated.GetComponent<Animator>();
+
+        if (anim != nullptr) {
+            anim->SetAnimation("hit");
+        }
     }
 }
 
 void Zombie::Update(float dt) {
     InputManager& input = InputManager::GetInstance();
+
+    hitTimer.Update(dt);
+    deathTimer.Update(dt);
+
+    //Deleta o Corpo do Zumbi depois de 5 segundos Morto
+    if (dead) {
+        if (deathTimer.Get() >= 5.0f) {
+            associated.RequestDelete();
+        }
+        //Parada do loop
+        return;
+    }
+
+    
+    //Animação de Walking após 5 segundos do hit
+    if (hit && !dead && hitTimer.Get() >= 0.5f) {
+        hit = false;
+
+        Animator* anim =
+            (Animator*) associated.GetComponent<Animator>();
+        if (anim != nullptr) {
+            anim->SetAnimation("walking");
+        }
+    }
 
     //Dano ao Cliclar
     if (input.MousePress(LEFT_MOUSE_BUTTON)) {
