@@ -12,6 +12,10 @@ Game& Game::GetInstance(){
 }
 
 Game::Game(std::string title, int width, int height) {
+    
+    frameStart = SDL_GetTicks();
+    dt = 0;
+
     if (instance != nullptr){
         std::cout << "Erro: Game já instaciado!" << std::endl;
         exit(1);
@@ -32,6 +36,7 @@ Game::Game(std::string title, int width, int height) {
     }
 
     int mixFlags = MIX_INIT_MP3 | MIX_INIT_OGG | MIX_INIT_MOD;
+
     if (!(Mix_Init(mixFlags) & mixFlags)) {
         std::cout << "Erro Mix_Init: " << Mix_GetError() << std::endl;
         exit(1);
@@ -67,6 +72,18 @@ Game::Game(std::string title, int width, int height) {
 
     state = new State();
 
+}
+
+void Game::CalculateDeltaTime(){
+    int currentTime = SDL_GetTicks();
+
+    dt = (currentTime - frameStart) / 1000.0f;
+
+    frameStart = currentTime;
+}
+
+float Game::GetDeltaTime(){
+    return dt;
 }
 
 Game::~Game(){
@@ -105,14 +122,16 @@ SDL_Renderer* Game::GetRenderer() {
 void Game::Run(){
 
     while (!state->QuitRequested()){
-        SDL_RenderClear(renderer);
+        CalculateDeltaTime();
 
         InputManager::GetInstance().Update();
 
         state->Update(0);
-        state->Render();
 
+        SDL_RenderClear(renderer);
+        state->Render();
         SDL_RenderPresent(renderer);
+
         SDL_Delay(16);
     }
 
