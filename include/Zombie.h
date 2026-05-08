@@ -13,16 +13,16 @@ class Zombie : public Component{
         Timer hitTimer;
         Timer deathTimer;
 
-        bool hit;
-        bool dead;
 
         void Update(float dt);
         void Render();
 
-        Sound deathSound;
         Sound hitSound;
+        Sound deathSound;
 
     private:
         int hitpoins;
+        bool hit;
+        bool dead;
 };
 

@@ -62,7 +62,7 @@ void State::Update(float dt){
     }
 
     //Atualiza Objetos
-    for (int i = 0; i < objectArray.size(); i++) {
+    for (std::size_t i = 0; i < objectArray.size(); i++) {
         objectArray[i]->Update(dt);
     }
 

@@ -12,8 +12,6 @@ class GameObject{
         void Update(float dt);
         void Render();
 
-        bool IsDead() const;
-
         void RequestDelete();
 
         void AddComponent(Component* cpt);
@@ -23,6 +21,8 @@ class GameObject{
         T* GetComponent();
 
         Rect box;
+
+        bool IsDead() const;
 
     private:
         std::vector<Component*> components;

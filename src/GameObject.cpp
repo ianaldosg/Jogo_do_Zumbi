@@ -1,7 +1,7 @@
 #include "../include/GameObject.h"
 
 GameObject::GameObject()
-    : isDead(false), box(0, 0, 0, 0) {}
+    : box(0, 0, 0, 0), isDead(false) {}
 
 GameObject::~GameObject(){
     for (int i = components.size() - 1; i >= 0; i--){
@@ -35,9 +35,10 @@ void GameObject::AddComponent(Component* cpt) {
 }
 
 void GameObject::RemoveComponent(Component* cpt) {
-    for (int i = 0; i < components.size(); i++){
+    for (std::size_t i = 0; i < components.size(); i++){
         if (components[i] == cpt) {
             delete components[i];
+            components[i] = nullptr;
             components.erase(components.begin() + i);
             return;
         }

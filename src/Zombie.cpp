@@ -4,7 +4,7 @@
 #include "../include/InputManager.h"
 
 Zombie::Zombie(GameObject& associated) 
-    : Component(associated), hitpoins(100),hit(false),dead(false),hitSound("Recursos/audio/Hit0.wav"), deathSound("Recursos/audio/Dead.wav"){
+    : Component(associated), hitSound("Recursos/audio/Hit0.wav"), deathSound("Recursos/audio/Dead.wav"), hitpoins(100), hit(false), dead(false){
 
         SpriteRenderer* sr = new SpriteRenderer(
                 associated,

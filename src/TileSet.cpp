@@ -1,7 +1,7 @@
 #include "../include/TileSet.h"
 
 TileSet::TileSet(int tileWidth, int tileHeight, std::string file) 
-    : tileWidth(tileWidth), tileHeight(tileHeight), tileSet(file){
+    : tileSet(file), tileWidth(tileWidth), tileHeight(tileHeight){
         if (tileSet.IsOpen()) {
             int imageWidth = tileSet.GetWidth(); 
             int imageHeight = tileSet.GetHeight();
