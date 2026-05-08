@@ -2,15 +2,21 @@
 #include "../include/SpriteRenderer.h"
 #include "../include/Sprite.h"
 #include "../include/InputManager.h"
+#include "../include/Camera.h"
 
 State::State() : quitRequested(false) {
     LoadAssets();
 
     //Criando Imagem
     GameObject* bg = new GameObject();
-    bg->AddComponent(
-            new SpriteRenderer(*bg, "Recursos/img/Background.png")
-                );
+
+    SpriteRenderer* bgRender = 
+            new SpriteRenderer(*bg, "Recursos/img/Background.png");
+
+    bgRender->SetCameraFollower(true);
+
+    bg->AddComponent(bgRender);
+
     AddObject(bg);
 
     //Criando Musica
@@ -22,6 +28,9 @@ State::State() : quitRequested(false) {
     TileSet* tileSet = new TileSet(64, 64, "Recursos/img/Tileset.png");
 
     TileMap* tileMap = new TileMap(*mapObject, "Recursos/map/map.txt", tileSet);
+
+    //Setando Camadas Parallax
+    tileMap->SetParallax(0, 1.0f);
 
     mapObject-> AddComponent(tileMap);
 
@@ -48,6 +57,9 @@ void State::Update(float dt){
         quitRequested = true;
     }
 
+    //Camera Update
+    Camera::Update(dt);
+
     //Criando Zumbi
     if (input.KeyPress(SDLK_SPACE)) {
         GameObject* zombieGO = new GameObject();
@@ -55,8 +67,8 @@ void State::Update(float dt){
         Zombie* zombie = new Zombie(*zombieGO);
         zombieGO->AddComponent(zombie);
 
-        zombieGO->box.x = input.GetMouseX() - (zombieGO->box.w /2);
-        zombieGO->box.y = input.GetMouseY() - (zombieGO->box.h /2);
+        zombieGO->box.x = input.GetMouseX() + Camera::pos.x - (zombieGO->box.w /2);
+        zombieGO->box.y = input.GetMouseY() + Camera::pos.y - (zombieGO->box.h /2);
 
         AddObject(zombieGO);
     }
@@ -66,6 +78,7 @@ void State::Update(float dt){
         objectArray[i]->Update(dt);
     }
 
+    //Remoção de Objetos Motos
     for (int i = objectArray.size() - 1; i >= 0; i--){
         if (objectArray[i]->IsDead()) {
             objectArray.erase(objectArray.begin() + i);

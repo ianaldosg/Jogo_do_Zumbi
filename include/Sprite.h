@@ -26,6 +26,8 @@ public:
 
     bool IsOpen();
 
+    void SetCameraFollower(bool cameraFollower);
+
 private:
     SDL_Texture* texture;
     SDL_Rect clipRect;
@@ -35,4 +37,6 @@ private:
 
     int frameCountW;
     int frameCountH;
+
+    bool cameraFollower;
 };

@@ -49,3 +49,6 @@ void SpriteRenderer::Render() {
             );
 }
 
+void SpriteRenderer::SetCameraFollower(bool cameraFollower){
+    sprite.SetCameraFollower(cameraFollower);
+}

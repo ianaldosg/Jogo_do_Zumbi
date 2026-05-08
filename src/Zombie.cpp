@@ -2,6 +2,7 @@
 #include "../include/SpriteRenderer.h"
 #include "../include/Animator.h"
 #include "../include/InputManager.h"
+#include "../include/Camera.h"
 
 Zombie::Zombie(GameObject& associated) 
     : Component(associated), hitSound("Recursos/audio/Hit0.wav"), deathSound("Recursos/audio/Dead.wav"), hitpoins(100), hit(false), dead(false){
@@ -63,11 +64,17 @@ void Zombie::Damage(int damage) {
 void Zombie::Update(float dt) {
     InputManager& input = InputManager::GetInstance();
 
+    int mouseX = input.GetMouseX() + Camera::pos.x;
+    int mouseY = input.GetMouseY() + Camera::pos.y;
+
     hitTimer.Update(dt);
     deathTimer.Update(dt);
 
     //Deleta o Corpo do Zumbi depois de 5 segundos Morto
     if (dead) {
+        if (Camera::GetFocus() == &associated) {
+            Camera::Unfollow();
+        }
         if (deathTimer.Get() >= 5.0f) {
             associated.RequestDelete();
         }
@@ -89,12 +96,9 @@ void Zombie::Update(float dt) {
 
     //Dano ao Cliclar
     if (input.MousePress(LEFT_MOUSE_BUTTON)) {
-
-        int mouseX = input.GetMouseX();
-        int mouseY = input.GetMouseY();
-
         if (associated.box.Contains(Vec2(mouseX, mouseY))) {
             Damage(20);
+            Camera::Follow(&associated);
         }
     }
 }

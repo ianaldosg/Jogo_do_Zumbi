@@ -12,6 +12,8 @@ TileSet::TileSet(int tileWidth, int tileHeight, std::string file)
             tileCount = columns * rows;
 
             tileSet.SetFrameCount(columns, rows); 
+
+            tileSet.SetCameraFollower(true);
         }
     }
 

@@ -15,6 +15,8 @@ class TileMap : public Component {
 
         void SetTileSet(TileSet* tileSet);
 
+        void SetParallax(int layer, float factor);
+
         int& At(int x, int y, int z = 0);
 
         void Render();
@@ -27,6 +29,8 @@ class TileMap : public Component {
 
     private:
         std::vector<int> tileMatrix;
+
+        std::vector<float> parallax;
 
         std::unique_ptr<TileSet> tileSet;
 

@@ -24,6 +24,8 @@ class SpriteRenderer : public Component{
 
         void SetFrame(int frame);
 
+        void SetCameraFollower(bool cameraFollower);
+
     private:
         Sprite sprite;
 };
