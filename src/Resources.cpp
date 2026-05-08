@@ -26,7 +26,9 @@ SDL_Texture* Resources::GetImage(std::string file) {
 
 void Resources::ClearImages() {
     for (auto& pair : imageTable) {
-        SDL_DestroyTexture(pair.second);
+        if (pair.second != nullptr) {
+            SDL_DestroyTexture(pair.second);
+        }
     }
 
     imageTable.clear();

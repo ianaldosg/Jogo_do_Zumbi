@@ -87,7 +87,10 @@ float Game::GetDeltaTime(){
 }
 
 Game::~Game(){
-    delete state;
+    if (state != nullptr) {
+        delete state;
+        state = nullptr;
+    }
 
     Resources::ClearImages();
     Resources::ClearMusic();
