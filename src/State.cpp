@@ -1,26 +1,11 @@
 #include "../include/State.h"
-#include "../include/SpriteRenderer.h"
+//#include "../include/SpriteRenderer.h"
 #include "../include/Sprite.h"
 #include "../include/InputManager.h"
 #include "../include/Camera.h"
 
 State::State() : quitRequested(false) {
     LoadAssets();
-
-    //Criando Imagem
-    GameObject* bg = new GameObject();
-
-    SpriteRenderer* bgRender = 
-            new SpriteRenderer(*bg, "Recursos/img/Background.png");
-
-    bgRender->SetCameraFollower(true);
-
-    bg->AddComponent(bgRender);
-
-    AddObject(bg);
-
-    //Criando Musica
-    music.Play(-1);
 
     //Criando TileMap
     GameObject* mapObject = new GameObject();
@@ -30,7 +15,9 @@ State::State() : quitRequested(false) {
     TileMap* tileMap = new TileMap(*mapObject, "Recursos/map/map.txt", tileSet);
 
     //Setando Camadas Parallax
-    tileMap->SetParallax(0, 1.0f);
+    tileMap->SetParallax(0, 0.2f);
+    tileMap->SetParallax(1, 1.0f);
+    //tileMap->SetParallax(2, 0.2f);
 
     mapObject-> AddComponent(tileMap);
 
@@ -38,6 +25,9 @@ State::State() : quitRequested(false) {
     mapObject->box.y = 0;
 
     AddObject(mapObject);
+
+    //Criando Musica
+    music.Play(-1);
 }
 
 State::~State() {
@@ -87,8 +77,6 @@ void State::Update(float dt){
 }
 
 void State::Render(){
-    //bg.Render(0,0);
-    
     for (auto& obj : objectArray) {
         obj->Render();
     }

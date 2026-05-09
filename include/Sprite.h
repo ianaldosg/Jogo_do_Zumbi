@@ -28,6 +28,10 @@ public:
 
     void SetCameraFollower(bool cameraFollower);
 
+    void SetParallax(float factor);
+
+    SDL_Texture* GetTexture() {return texture;}
+
 private:
     SDL_Texture* texture;
     SDL_Rect clipRect;
@@ -39,4 +43,6 @@ private:
     int frameCountH;
 
     bool cameraFollower;
+
+    float parallaxFactor;
 };

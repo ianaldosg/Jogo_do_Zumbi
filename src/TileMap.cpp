@@ -1,5 +1,6 @@
 #include "../include/TileMap.h"
 #include "../include/Camera.h"
+#include <iostream>
 
 TileMap::TileMap(GameObject& associated, std::string file, TileSet* tileSet) : Component(associated){
     SetTileSet(tileSet);
@@ -13,16 +14,28 @@ TileMap::TileMap(GameObject& associated, std::string file, TileSet* tileSet) : C
 void TileMap::Load(std::string file) {
     std::ifstream mapFile(file);
 
-    mapFile >> mapWidth >> mapHeight >> mapDepth;
+    if (!mapFile.is_open()) {
+        std::cout << "Erro: Nao foi possivel abrir o arquivo de mapa:" << file << std::endl;
+        return;
+    }
+
+    char separator;
+    mapFile >> mapWidth >> separator >> mapHeight >> separator >> mapDepth >> separator;
+
+    parallax.resize(mapDepth, 1.0f);
 
     tileMatrix.clear();
 
     int tile;
 
-    for ( int i = 0; i < mapWidth * mapHeight * mapDepth; i++) {
-        mapFile >> tile;
+    while (mapFile >> tile) {
         tileMatrix.push_back(tile);
+        mapFile >> separator;
     }
+
+    std::cout << "Mapa carregado: " << mapWidth << "x" << mapHeight << " Camadas: " << mapDepth << std::endl;
+    std::cout << "Total de tiles no vetor: " << tileMatrix.size() << std::endl;
+
 }
 
 void TileMap::SetTileSet(TileSet* tileSet) {
@@ -30,7 +43,7 @@ void TileMap::SetTileSet(TileSet* tileSet) {
 }
 
 int& TileMap::At(int x, int y, int z) {
-    return tileMatrix[x + y * mapWidth + z * mapWidth * mapHeight];
+    return tileMatrix[x + y * mapWidth +  z * ( mapHeight * mapWidth ) ];
 }
 
 void TileMap::RenderLayer(int layer) {

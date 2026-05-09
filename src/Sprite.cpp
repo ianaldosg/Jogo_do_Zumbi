@@ -8,10 +8,10 @@ Sprite::Sprite()
     width(0), 
     height(0), 
     frameCountW(1),
-    frameCountH(1),cameraFollower(false) {}
+    frameCountH(1),cameraFollower(false), parallaxFactor(1.0f) {}
 
 Sprite::Sprite(std::string file, int frameCountW, int frameCountH) 
-    : texture(nullptr),width(0), height(0), frameCountW(frameCountW), frameCountH(frameCountH), cameraFollower(false) {
+    : texture(nullptr),width(0), height(0), frameCountW(frameCountW), frameCountH(frameCountH), cameraFollower(false), parallaxFactor(1.0f) {
     Open(file);
 }
 
@@ -102,4 +102,8 @@ bool Sprite::IsOpen(){
 
 void Sprite::SetCameraFollower(bool cameraFollower){
     this->cameraFollower = cameraFollower;
+}
+
+void Sprite::SetParallax(float factor) {
+    parallaxFactor = factor;
 }

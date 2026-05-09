@@ -26,6 +26,8 @@ class SpriteRenderer : public Component{
 
         void SetCameraFollower(bool cameraFollower);
 
+        void SetParallax(float factor);
+
     private:
         Sprite sprite;
 };

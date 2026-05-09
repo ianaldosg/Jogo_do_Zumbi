@@ -52,3 +52,7 @@ void SpriteRenderer::Render() {
 void SpriteRenderer::SetCameraFollower(bool cameraFollower){
     sprite.SetCameraFollower(cameraFollower);
 }
+
+void SpriteRenderer::SetParallax(float factor){
+    sprite.SetParallax(factor);
+}

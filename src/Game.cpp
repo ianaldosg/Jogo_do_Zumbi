@@ -6,7 +6,7 @@ Game* Game::instance = nullptr;
 
 Game& Game::GetInstance(){
     if (instance == nullptr){
-        instance = new Game("Ian Aldo SerwY Gonzale 242039176",1200,900);
+        instance = new Game("Ian Aldo Serwy Gonzales 242039176",1200,900);
     }
     return *instance;
 }
