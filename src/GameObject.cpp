@@ -1,7 +1,7 @@
 #include "../include/GameObject.h"
 
 GameObject::GameObject()
-    : box(0, 0, 0, 0), isDead(false) {}
+    : started(false), box(0, 0, 0, 0), isDead(false) {}
 
 GameObject::~GameObject(){
     components.clear();
@@ -27,8 +27,19 @@ void GameObject::RequestDelete() {
     isDead = true;
 }
 
+void GameObject::Start() {
+    for (auto& c : components) {
+        c->Start();
+    }
+    started = true;
+}
+
 void GameObject::AddComponent(Component* cpt) {
     components.push_back(cpt);
+
+    if (started) {
+        components.back()->Start();
+    }
 }
 
 void GameObject::RemoveComponent(Component* cpt) {

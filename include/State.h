@@ -19,14 +19,22 @@ public:
     void Update(float dt);
     void Render(); 
 
-    void AddObject(GameObject* go);
+    void Start();
+
+    std::weak_ptr<GameObject> AddObject(GameObject* go);
+    std::weak_ptr<GameObject> GameObjectPtr(GameObject* go);
+    //void AddObject(GameObject* go);
+
+
 
     bool QuitRequested();
 
 private:
     Sprite bg;
     Music music;
-    std::vector<std::unique_ptr<GameObject>> objectArray;
+
+    bool started;
+    std::vector<std::shared_ptr<GameObject>> objectArray;
 
     bool quitRequested;
 };

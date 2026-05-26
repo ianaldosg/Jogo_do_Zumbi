@@ -14,6 +14,9 @@ class GameObject{
 
         void RequestDelete();
 
+        void Start();
+        bool started;
+
         void AddComponent(Component* cpt);
         void RemoveComponent(Component* cpt);
 

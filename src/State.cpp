@@ -82,8 +82,30 @@ void State::Render(){
     }
 }
 
-void State::AddObject(GameObject* go) {
-    objectArray.emplace_back(go);
+void State::Start() {
+    LoadAssets();
+    for (auto& go : objectArray) {
+        go->Start();
+    }
+    started = true;
+}
+
+std::weak_ptr<GameObject> State::AddObject(GameObject* go) {
+    std::shared_ptr<GameObject> sharedGo(go);
+    objectArray.push_back(sharedGo);
+    if (started) {
+        sharedGo->Start();
+    }
+    return std::weak_ptr<GameObject>(sharedGo);
+}
+
+std::weak_ptr<GameObject> State::GameObjectPtr(GameObject* go) {
+    for (auto& sharedGo : objectArray) {
+        if (sharedGo.get() == go) {
+            return std::weak_ptr<GameObject>(sharedGo);
+        }
+    }
+    return std::weak_ptr<GameObject>();
 }
 
 bool State::QuitRequested(){
