@@ -33,8 +33,8 @@ class Character : public Component {
         std::weak_ptr<GameObject> gun;
         std::queue<Command> taskQueue;
         Vec2 speed;
-        float linearSpeed;
         int hp;
+        float linearSpeed;
         Timer deathTimer;
 
 };

@@ -98,7 +98,6 @@ void Zombie::Update(float dt) {
     if (input.MousePress(LEFT_MOUSE_BUTTON)) {
         if (associated.box.Contains(Vec2(mouseX, mouseY))) {
             Damage(20);
-            Camera::Follow(&associated);
         }
     }
 }

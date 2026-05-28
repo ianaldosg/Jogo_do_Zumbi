@@ -36,6 +36,9 @@ void Animator::Render() {
 }
 
 void Animator::SetAnimation(std::string name) {
+    if (name == current) return;
+    current = name;
+
     auto it = animations.find(name);
 
     if (it != animations.end()) {

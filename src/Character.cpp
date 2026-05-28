@@ -41,3 +41,60 @@ void Character::Start() {
 
     gun = Game::GetInstance().GetState().AddObject(gunGo);
 }
+
+void Character::Update(float dt) {
+    speed = Vec2(0,0);
+
+    // Fila de Comandos
+    // VOLTAR AQUI NEVER NESTING!!!
+    if (!taskQueue.empty()) {
+        Command task = taskQueue.front();
+        taskQueue.pop();
+
+        if (task.type == Command::MOVE) {
+            Vec2 dir = task.pos - Vec2(associated.box.x, associated.box.y);
+
+            if (dir.Magnitude() > 2.0f) {
+                dir = dir.Normalizar();
+                speed = dir * linearSpeed;
+            }
+        } else if (task.type == Command::SHOOT) {
+            auto gunPtr = gun.lock();
+            if (gunPtr) {
+                Gun* g = (Gun*)gunPtr->GetComponent<Gun>();
+                if (g) g->Shoot(task.pos);
+            }
+        }
+    }
+
+    // Movimento
+    associated.box.x += speed.x * dt;
+    associated.box.y += speed.y * dt;
+
+    // Animações vivo
+    if (hp > 0) {
+        if (speed.Magnitude() > 0) {
+            associated.GetComponent<Animator>()->SetAnimation("walking");
+        }
+        else {
+            associated.GetComponent<Animator>()->SetAnimation("idle");
+        }
+    }
+
+    // Morto?
+    if (hp <= 0) {
+        associated.GetComponent<Animator>()->SetAnimation("dead");
+        deathTimer.Update(dt);
+        if (deathTimer.Get() > 3.0f) {
+            associated.RequestDelete();
+        }
+    }
+}
+
+void Character::Issue(Command task) {
+    taskQueue.push(task);
+}
+
+void Character::Render() {
+
+}

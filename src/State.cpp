@@ -3,6 +3,7 @@
 #include "../include/Sprite.h"
 #include "../include/InputManager.h"
 #include "../include/Camera.h"
+#include "../include/Character.h"
 
 State::State() : quitRequested(false) {
     LoadAssets();
@@ -28,6 +29,25 @@ State::State() : quitRequested(false) {
 
     //Criando Musica
     music.Play(-1);
+    
+    // Criando Player
+    GameObject* playerGo = new GameObject();
+    Character* ch = new Character(*playerGo, "Recursos/img/Player.png");
+    playerGo->AddComponent(ch);
+
+    // Ponteiro estático
+    Character::player = ch;
+
+    // Posiciona Player no centro do mapa
+    playerGo->box.x = 1280;
+    playerGo->box.y = 1280;
+
+    // Estado
+    AddObject(playerGo);
+
+    // Foco da Camera no Player
+    Camera::Follow(playerGo);
+    
 }
 
 State::~State() {

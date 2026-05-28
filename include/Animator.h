@@ -20,6 +20,7 @@ class Animator : public Component{
 
     private:
         std::unordered_map<std::string, Animation> animations;
+        std::string current;
 
         int frameStart;
         int frameEnd;
