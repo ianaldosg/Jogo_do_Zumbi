@@ -21,7 +21,15 @@ class GameObject{
         void RemoveComponent(Component* cpt);
 
         template <typename T>
-        T* GetComponent();
+            T* GetComponent() {
+                for (auto& component : components) {
+                    T* casted = dynamic_cast<T*>(component);
+                    if (casted != nullptr) {
+                        return casted;
+                    }
+                }
+                return nullptr;
+            };
 
         Rect box;
 

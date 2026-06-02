@@ -4,6 +4,7 @@
 #include "../include/InputManager.h"
 #include "../include/Camera.h"
 #include "../include/Character.h"
+#include "../include/PlayerController.h"
 
 State::State() : quitRequested(false) {
     LoadAssets();
@@ -34,6 +35,8 @@ State::State() : quitRequested(false) {
     GameObject* playerGo = new GameObject();
     Character* ch = new Character(*playerGo, "Recursos/img/Player.png");
     playerGo->AddComponent(ch);
+    // PlayerController
+    playerGo->AddComponent(new PlayerController(*playerGo));
 
     // Ponteiro estático
     Character::player = ch;

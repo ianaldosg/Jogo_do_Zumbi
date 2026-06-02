@@ -47,7 +47,7 @@ void Character::Update(float dt) {
 
     // Fila de Comandos
     // VOLTAR AQUI NEVER NESTING!!!
-    if (!taskQueue.empty()) {
+    while (!taskQueue.empty()) {
         Command task = taskQueue.front();
         taskQueue.pop();
 
@@ -58,7 +58,8 @@ void Character::Update(float dt) {
                 dir = dir.Normalizar();
                 speed = dir * linearSpeed;
             }
-        } else if (task.type == Command::SHOOT) {
+        }
+        if (task.type == Command::SHOOT) {
             auto gunPtr = gun.lock();
             if (gunPtr) {
                 Gun* g = (Gun*)gunPtr->GetComponent<Gun>();
@@ -95,6 +96,6 @@ void Character::Issue(Command task) {
     taskQueue.push(task);
 }
 
-void Character::Render() {
+void Character::Render() {}
 
-}
+Character::Command::Command(CommandType type, float x, float y) : type(type), pos(x, y) {}

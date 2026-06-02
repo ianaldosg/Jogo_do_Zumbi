@@ -37,11 +37,11 @@ void Animator::Render() {
 
 void Animator::SetAnimation(std::string name) {
     if (name == current) return;
-    current = name;
 
     auto it = animations.find(name);
 
     if (it != animations.end()) {
+        current = name;
         frameStart = it->second.frameStart;
         frameEnd = it->second.frameEnd;
         frameTime = it->second.frameTime;

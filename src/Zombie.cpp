@@ -62,10 +62,10 @@ void Zombie::Damage(int damage) {
 }
 
 void Zombie::Update(float dt) {
-    InputManager& input = InputManager::GetInstance();
+    //InputManager& input = InputManager::GetInstance();
 
-    int mouseX = input.GetMouseX() + Camera::pos.x;
-    int mouseY = input.GetMouseY() + Camera::pos.y;
+    //int mouseX = input.GetMouseX() + Camera::pos.x;
+    //int mouseY = input.GetMouseY() + Camera::pos.y;
 
     hitTimer.Update(dt);
     deathTimer.Update(dt);
@@ -95,13 +95,11 @@ void Zombie::Update(float dt) {
     }
 
     //Dano ao Cliclar
-    if (input.MousePress(LEFT_MOUSE_BUTTON)) {
-        if (associated.box.Contains(Vec2(mouseX, mouseY))) {
-            Damage(20);
-        }
-    }
+    //if (input.MousePress(LEFT_MOUSE_BUTTON)) {
+    //    if (associated.box.Contains(Vec2(mouseX, mouseY))) {
+    //        Damage(20);
+    //    }
+    //}
 }
 
-void Zombie::Render() {
-
-}
+void Zombie::Render() {}

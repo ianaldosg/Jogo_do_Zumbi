@@ -28,14 +28,3 @@ class Animator : public Component{
         int currentFrame;
         float timeElapsed;
 };
-
-template <typename T>
-T* GameObject::GetComponent() {
-    for (auto it = components.begin(); it != components.end(); ++it) {
-        T* result = dynamic_cast<T*>(*it);
-        if (result != nullptr) {
-            return result;
-        }
-    }
-    return nullptr;
-}

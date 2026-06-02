@@ -1,7 +1,9 @@
 #include "../include/Gun.h"
 #include "../include/SpriteRenderer.h"
 #include "../include/Animator.h"
-#include "../include/Character.h"
+// Testando
+//#include "../include/InputManager.h"
+//#include "../include/Camera.h"
 
 Gun::Gun(GameObject& associated, std::weak_ptr<GameObject> character) : Component(associated),
     shotSound("Recursos/audio/Range.wav"),
@@ -26,16 +28,27 @@ void Gun::Update(float dt) {
         return;
     }
 
+    // Angulo para Mouse
+    //InputManager& input = InputManager::GetInstance();
+    //Vec2 mousePos(input.GetMouseX(), input.GetMouseY());
+    //Vec2 worldMousePos = mousePos + Camera::pos;
+
+    //Vec2 dirMouse = worldMousePos - centroPersonagem;
+    //angle = atan2(dirMouse.y, dirMouse.x);
+
     // Centraliza Arma
     Vec2 centroPersonagem = charPtr->box.GetCentroRect();
     associated.box.x = centroPersonagem.x - (associated.box.w / 2.0f);
     associated.box.y = centroPersonagem.y - (associated.box.h / 2.0f);
+    // Um pouco mais abaixo
+    associated.box.y += 15.0f;
 
-    // Esdados do cooldown
-    float dist = 30.0f;
+    // Angulação da arma
+    float dist = 20.0f;
     associated.box.x += cos(angle) * dist;
     associated.box.y += sin(angle) * dist;
 
+    // Esdados do cooldown
     cdTimer.Update(dt);
 
     if (cooldownState == 1 && cdTimer.Get() > 0.5f) {
@@ -56,7 +69,7 @@ void Gun::Update(float dt) {
 
 void Gun::Shoot(Vec2 target) {
     if (cooldownState != 0) return;
-    
+
     // Angulo alvo
     Vec2 origin = associated.box.GetCentroRect();
     Vec2 dir = target - origin;
@@ -68,6 +81,4 @@ void Gun::Shoot(Vec2 target) {
     cdTimer.Restart();
 }
 
-void Gun::Render() {
-
-}
+void Gun::Render() {}

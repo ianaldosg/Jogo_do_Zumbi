@@ -27,8 +27,9 @@ class Character : public Component {
 
                 Command(CommandType type, float x, float y);
         };
-        void Issue(Command task);
 
+        void Issue(Command task);
+        
     private:
         std::weak_ptr<GameObject> gun;
         std::queue<Command> taskQueue;
