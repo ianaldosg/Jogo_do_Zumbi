@@ -1,6 +1,8 @@
 #include "../include/Gun.h"
 #include "../include/SpriteRenderer.h"
 #include "../include/Animator.h"
+#include "../include/Bullet.h"
+#include "../include/Game.h"
 // Testando
 //#include "../include/InputManager.h"
 //#include "../include/Camera.h"
@@ -77,6 +79,24 @@ void Gun::Shoot(Vec2 target) {
 
     // Inicia som
     shotSound.Play();
+    cooldownState = 1;
+    cdTimer.Restart();
+
+    // Criando bala
+    auto* bulletGO = new GameObject();
+
+    // Bala sai da ponta do cano
+    bulletGO->box.x = origin.x;
+    bulletGO->box.y = origin.y;
+
+    // Adiciona Component
+    auto* bullet = new Bullet(*bulletGO, angle, 400.0f, 10, 500.0f);
+    bulletGO->AddComponent(bullet);
+
+    // Estado Atual
+    Game::GetInstance().GetState().AddObject(bulletGO);
+
+    // Cooldown
     cooldownState = 1;
     cdTimer.Restart();
 }
