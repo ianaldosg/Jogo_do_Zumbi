@@ -11,7 +11,7 @@ Sprite::Sprite()
     frameCountH(1),cameraFollower(false), parallaxFactor(1.0f) {}
 
 Sprite::Sprite(std::string file, int frameCountW, int frameCountH) 
-    : texture(nullptr),width(0), height(0), frameCountW(frameCountW), frameCountH(frameCountH), cameraFollower(false), parallaxFactor(1.0f) {
+    : texture(nullptr),width(0), height(0), frameCountW(frameCountW), frameCountH(frameCountH), cameraFollower(false), parallaxFactor(1.0f), flip(SDL_FLIP_NONE), scale(Vec2(1.0f, 1.0f)) {
     Open(file);
 }
 
@@ -38,7 +38,7 @@ void Sprite::SetClip(int x, int y, int w, int h){
     clipRect.h = h;
 }
 
-void Sprite::Render(int x, int y, int w, int h){
+void Sprite::Render(int x, int y, int w, int h, float angle){
     SDL_Rect dstrect;
 
     if (cameraFollower) {
@@ -53,20 +53,27 @@ void Sprite::Render(int x, int y, int w, int h){
     dstrect.w = w;
     dstrect.h = h;
 
-    SDL_RenderCopy(
+    SDL_RenderCopyEx(
         Game::GetInstance().GetRenderer(), 
         texture,
         &clipRect, 
-        &dstrect
+        &dstrect,
+        angle,
+        nullptr,
+        flip
     );
 }
 
+void Sprite::Render(int x, int y, float angle) {
+    Render(x, y, GetWidth(), GetHeight(), angle);
+}
+
 int Sprite::GetWidth(){
-    return width / frameCountW;
+    return clipRect.w * scale.x;
 }
 
 int Sprite::GetHeight(){
-    return height / frameCountH;
+    return clipRect.h * scale.y;
 }
 
 void Sprite::SetFrame(int frame) {
@@ -106,4 +113,17 @@ void Sprite::SetCameraFollower(bool cameraFollower){
 
 void Sprite::SetParallax(float factor) {
     parallaxFactor = factor;
+}
+
+void Sprite::SetScale(float scaleX, float scaleY) {
+    if (scaleX != 0) scale.x = scaleX;
+    if (scaleY != 0) scale.y = scaleY;
+}
+
+Vec2 Sprite::GetScale() {
+    return scale;
+}
+
+void Sprite::SetFlip(SDL_RendererFlip flip) {
+    this->flip = flip;
 }

@@ -35,6 +35,8 @@ class GameObject{
 
         bool IsDead() const;
 
+        double angleDeg;
+
     private:
         std::vector<Component*> components;
         bool isDead;

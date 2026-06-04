@@ -28,6 +28,10 @@ class SpriteRenderer : public Component{
 
         void SetParallax(float factor);
 
+        void SetScale(float scaleX, float scaleY);
+
+        void SetFrame(int frame, SDL_RendererFlip flip);
+
     private:
         Sprite sprite;
 };

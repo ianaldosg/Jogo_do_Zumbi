@@ -67,6 +67,18 @@ void Gun::Update(float dt) {
     else if (cooldownState == 3 && cdTimer.Get() > 0.1f) {
         cooldownState = 0;
     }
+
+    float angleDegrees = angle * (180.0f / M_PI);
+    associated.angleDeg = angleDegrees;
+
+    auto* sr = associated.GetComponent<SpriteRenderer>();
+    if (sr != nullptr) {
+        if (angleDegrees > 90.0f || angleDegrees < -90.0f) {
+            sr->SetFrame(0, SDL_FLIP_VERTICAL);
+        } else {
+            sr->SetFrame(0, SDL_FLIP_NONE);
+        }
+    }
 }
 
 void Gun::Shoot(Vec2 target) {

@@ -45,7 +45,8 @@ void SpriteRenderer::Render() {
             associated.box.x,
             associated.box.y,
             associated.box.w,
-            associated.box.h
+            associated.box.h,
+            associated.angleDeg
             );
 }
 
@@ -55,4 +56,16 @@ void SpriteRenderer::SetCameraFollower(bool cameraFollower){
 
 void SpriteRenderer::SetParallax(float factor){
     sprite.SetParallax(factor);
+}
+
+void SpriteRenderer::SetScale(float scaleX, float scaleY) {
+    // Mantém centro e ajusta largura e altura
+    sprite.SetScale(scaleX, scaleY);
+    associated.box.w = sprite.GetWidth(); 
+    associated.box.h = sprite.GetHeight(); 
+}
+
+void SpriteRenderer::SetFrame(int frame, SDL_RendererFlip flip) {
+    sprite.SetFrame(frame);
+    sprite.SetFlip(flip);
 }

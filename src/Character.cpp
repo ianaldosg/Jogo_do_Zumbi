@@ -23,9 +23,10 @@ Character::Character(GameObject& associated, std::string sprite) : Component(ass
 
     Animator* anim = new Animator(associated);
 
-    anim->AddAnimation("idle", Animation(6, 7, 0.2f));
-    anim->AddAnimation("walking", Animation(0, 5, 0.2f));
-    anim->AddAnimation("dead", Animation(10, 11, 0.2f));
+    anim->AddAnimation("idle", Animation(6, 7, 0));
+    anim->AddAnimation("walking_right", Animation(0, 5, 0.1f));
+    anim->AddAnimation("walking_left", Animation(0, 5, 0.1f, SDL_FLIP_HORIZONTAL));
+    anim->AddAnimation("dead", Animation(10, 11, 0.15f));
     associated.AddComponent(anim);
 }
 
@@ -75,7 +76,11 @@ void Character::Update(float dt) {
     // Animações vivo
     if (hp > 0) {
         if (speed.Magnitude() > 0) {
-            associated.GetComponent<Animator>()->SetAnimation("walking");
+            if (speed.x < 0) {
+                associated.GetComponent<Animator>()->SetAnimation("walking_right");
+            } else {
+                associated.GetComponent<Animator>()->SetAnimation("walking_left");
+            }
         }
         else {
             associated.GetComponent<Animator>()->SetAnimation("idle");

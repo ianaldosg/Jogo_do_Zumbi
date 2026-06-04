@@ -6,6 +6,12 @@ Bullet::Bullet(GameObject& associated,
                 float speed,
                 int damage,
                 float maxDistance) : Component(associated) {
+    // Imagem projétil
+    auto* sr = new SpriteRenderer(associated, "Recursos/img/Bullet.png");
+    // Ajuste de Tamanho
+    sr->SetScale(0.5f, 0.5f);
+    associated.AddComponent(sr);
+
     // Calcula velocidade a partir do angulo
     this->speed.x = cos(angle) * speed;
     this->speed.y = sin(angle) * speed;
@@ -16,9 +22,9 @@ Bullet::Bullet(GameObject& associated,
     // Dano
     this->damage = damage;
 
-    // Imagem projétil
-    auto* sr = new SpriteRenderer(associated, "Recursos/img/Bullet.png");
-    associated.AddComponent(sr);
+    // Angulação do objeto
+    associated.angleDeg = angle * (180.0 / M_PI) + 90.0;
+
 }
 
 void Bullet::Update(float dt) {

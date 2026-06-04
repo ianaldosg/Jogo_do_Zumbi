@@ -1,4 +1,5 @@
 #pragma once
+#define INCLUDE_SDL
 #include "SDL_include.h"
 
 class Animation{
@@ -6,9 +7,11 @@ class Animation{
         Animation();
         Animation(int frameStart,
                 int frameEnd,
-                float frameTime);
+                float frameTime,
+                SDL_RendererFlip flip = SDL_FLIP_NONE);
 
         int frameStart;
         int frameEnd;
         float frameTime;
+        SDL_RendererFlip flip;
 };

@@ -1,7 +1,7 @@
 #include "../include/GameObject.h"
 
 GameObject::GameObject()
-    : started(false), box(0, 0, 0, 0), isDead(false) {}
+    : started(false), box(0, 0, 0, 0), isDead(false), angleDeg(0) {}
 
 GameObject::~GameObject(){
     components.clear();
