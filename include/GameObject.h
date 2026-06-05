@@ -37,6 +37,8 @@ class GameObject{
 
         double angleDeg;
 
+        float sortY = -1;
+
     private:
         std::vector<Component*> components;
         bool isDead;

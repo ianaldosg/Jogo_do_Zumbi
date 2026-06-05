@@ -109,9 +109,12 @@ void State::Render(){
         renderOrder.push_back(obj.get());
     }
 
+    // Ordena pelo centro de Y da box
     std::sort(renderOrder.begin(), renderOrder.end(),
         [](GameObject* a, GameObject* b) {
-            return (a->box.y + a->box.h / 2) < (b->box.y + b->box.h / 2);
+            float ya = (a->sortY >= 0) ? a->sortY : (a->box.y + a->box.h / 2);
+            float yb = (b->sortY >= 0) ? b->sortY : (b->box.y + b->box.h / 2);
+            return ya < yb;
         });
 
     for (GameObject* obj : renderOrder) {

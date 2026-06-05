@@ -71,6 +71,7 @@ void Gun::Update(float dt) {
     float angleDegrees = angle * (180.0f / M_PI);
     associated.angleDeg = angleDegrees;
 
+    // Espelhamento
     auto* sr = associated.GetComponent<SpriteRenderer>();
     if (sr != nullptr) {
         if (angleDegrees > 90.0f || angleDegrees < -90.0f) {
@@ -79,6 +80,9 @@ void Gun::Update(float dt) {
             sr->SetFrame(0, SDL_FLIP_NONE);
         }
     }
+
+    // Gun tem Y = ao de Character
+    associated.sortY = charPtr->box.y + charPtr->box.h / 2;
 }
 
 void Gun::Shoot(Vec2 target) {
