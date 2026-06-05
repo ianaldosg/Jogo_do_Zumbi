@@ -5,6 +5,8 @@
 #include "../include/Camera.h"
 #include "../include/Character.h"
 #include "../include/PlayerController.h"
+#include <algorithm>
+#include <vector>
 
 State::State() : quitRequested(false) {
     LoadAssets();
@@ -100,7 +102,19 @@ void State::Update(float dt){
 }
 
 void State::Render(){
+    //bg->Render();
+
+    std::vector<GameObject*> renderOrder;
     for (auto& obj : objectArray) {
+        renderOrder.push_back(obj.get());
+    }
+
+    std::sort(renderOrder.begin(), renderOrder.end(),
+        [](GameObject* a, GameObject* b) {
+            return (a->box.y + a->box.h / 2) < (b->box.y + b->box.h / 2);
+        });
+
+    for (GameObject* obj : renderOrder) {
         obj->Render();
     }
 }
