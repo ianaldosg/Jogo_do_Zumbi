@@ -2,6 +2,7 @@
 #include "SDL_include.h"
 #include "Component.h" 
 #include "Vec2.h"
+#include "Character.h"
 
 class Bullet : public Component{
     public:
@@ -9,12 +10,17 @@ class Bullet : public Component{
                 float angle,
                 float speed,
                 int damage,
-                float maxDistance);
+                float maxDistance,
+                Character* shooter);
 
         void Update(float dt);
         void Render();
         
         int GetDamage();
+
+        bool targetsPlayer;
+
+        void NotifyCollision(GameObject& other); 
 
     private:
         Vec2 speed;

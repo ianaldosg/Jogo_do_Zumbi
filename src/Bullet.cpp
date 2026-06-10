@@ -1,11 +1,14 @@
 #include "../include/Bullet.h"
 #include "../include/SpriteRenderer.h"
+#include "../include/Collider.h"
+#include "../include/Character.h"
 
 Bullet::Bullet(GameObject& associated,
                 float angle,
                 float speed,
                 int damage,
-                float maxDistance) : Component(associated) {
+                float maxDistance,
+                Character* shooter) : Component(associated) {
     // Imagem projétil
     auto* sr = new SpriteRenderer(associated, "Recursos/img/Bullet.png");
     // Ajuste de Tamanho
@@ -25,6 +28,11 @@ Bullet::Bullet(GameObject& associated,
     // Angulação do objeto
     associated.angleDeg = angle * (180.0 / M_PI) + 90.0;
 
+    // Mira no player
+    targetsPlayer = (shooter != Character::player);
+
+    // Colisão
+    associated.AddComponent(new Collider(associated));
 }
 
 void Bullet::Update(float dt) {
@@ -48,4 +56,12 @@ void Bullet::Render() {}
 
 int Bullet::GetDamage() {
     return damage;
+}
+
+void Bullet::NotifyCollision(GameObject& other) {
+    // Balas não se destroem
+    Bullet* otherBullet = (Bullet*)other.GetComponent<Bullet>();
+    if (otherBullet != nullptr) return;
+
+    associated.RequestDelete();
 }

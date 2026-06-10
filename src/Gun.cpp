@@ -105,8 +105,15 @@ void Gun::Shoot(Vec2 target) {
     bulletGO->box.x = origin.x;
     bulletGO->box.y = origin.y;
 
+    // Atirador
+    Character* shooter = nullptr;
+    auto charPtr = character.lock();
+    if (charPtr) {
+        shooter = (Character*) charPtr->GetComponent<Character>();
+    }
+
     // Adiciona Component
-    auto* bullet = new Bullet(*bulletGO, angle, 400.0f, 10, 500.0f);
+    auto* bullet = new Bullet(*bulletGO, angle, 400.0f, 10, 500.0f, shooter);
     bulletGO->AddComponent(bullet);
 
     // Estado Atual

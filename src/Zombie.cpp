@@ -1,8 +1,9 @@
 #include "../include/Zombie.h"
 #include "../include/SpriteRenderer.h"
 #include "../include/Animator.h"
-#include "../include/InputManager.h"
 #include "../include/Camera.h"
+#include "../include/Collider.h"
+#include "../include/Bullet.h"
 
 Zombie::Zombie(GameObject& associated) 
     : Component(associated), hitSound("Recursos/audio/Hit0.wav"), deathSound("Recursos/audio/Dead.wav"), hitpoins(100), hit(false), dead(false){
@@ -25,6 +26,9 @@ Zombie::Zombie(GameObject& associated)
         anim->SetAnimation("walking");
 
         associated.AddComponent(anim);
+
+        // Colisão
+        associated.AddComponent(new Collider(associated));
 }
 
 void Zombie::Damage(int damage) {
@@ -62,11 +66,6 @@ void Zombie::Damage(int damage) {
 }
 
 void Zombie::Update(float dt) {
-    //InputManager& input = InputManager::GetInstance();
-
-    //int mouseX = input.GetMouseX() + Camera::pos.x;
-    //int mouseY = input.GetMouseY() + Camera::pos.y;
-
     hitTimer.Update(dt);
     deathTimer.Update(dt);
 
@@ -93,13 +92,13 @@ void Zombie::Update(float dt) {
             anim->SetAnimation("walking");
         }
     }
-
-    //Dano ao Cliclar
-    //if (input.MousePress(LEFT_MOUSE_BUTTON)) {
-    //    if (associated.box.Contains(Vec2(mouseX, mouseY))) {
-    //        Damage(20);
-    //    }
-    //}
 }
 
 void Zombie::Render() {}
+
+void Zombie::NotifyCollision(GameObject& other) {
+    Bullet* bullet = (Bullet*)other.GetComponent<Bullet>();
+    if (bullet == nullptr) return;
+
+    Damage(bullet->GetDamage());
+}

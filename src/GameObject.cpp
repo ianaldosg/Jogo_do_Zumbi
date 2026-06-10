@@ -50,3 +50,9 @@ void GameObject::RemoveComponent(Component* cpt) {
         }
     }
 }
+
+void GameObject::NotifyCollision(GameObject& other) {
+    for (auto& comp : components) {
+        comp->NotifyCollision(other);
+    }
+}

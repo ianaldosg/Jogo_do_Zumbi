@@ -39,6 +39,8 @@ class GameObject{
 
         float sortY = -1;
 
+        void NotifyCollision(GameObject& other);
+
     private:
         std::vector<Component*> components;
         bool isDead;

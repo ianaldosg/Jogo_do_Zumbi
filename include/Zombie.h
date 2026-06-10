@@ -20,6 +20,8 @@ class Zombie : public Component{
         Sound hitSound;
         Sound deathSound;
 
+        void NotifyCollision(GameObject& other);
+
     private:
         int hitpoins;
         bool hit;

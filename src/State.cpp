@@ -1,10 +1,11 @@
 #include "../include/State.h"
-//#include "../include/SpriteRenderer.h"
 #include "../include/Sprite.h"
 #include "../include/InputManager.h"
 #include "../include/Camera.h"
 #include "../include/Character.h"
 #include "../include/PlayerController.h"
+#include "../include/Collision.h"
+#include "../include/Collider.h"
 #include <algorithm>
 #include <vector>
 
@@ -97,6 +98,24 @@ void State::Update(float dt){
     for (int i = objectArray.size() - 1; i >= 0; i--){
         if (objectArray[i]->IsDead()) {
             objectArray.erase(objectArray.begin() + i);
+        }
+    }
+
+    for (int i = 0; i < objectArray.size(); i++) {
+        for (int j = i + 1; j < objectArray.size(); j++) {
+            auto& goA = *objectArray[i];
+            auto& goB = *objectArray[j];
+
+            auto* colA = (Collider*)goA.GetComponent<Collider>();
+            auto* colB = (Collider*)goB.GetComponent<Collider>();
+
+            if (colA == nullptr || colB == nullptr) continue;
+
+            // Colisão?
+            if (Collision::IsColliding(colA->box, colB->box, goA.angleDeg, goB.angleDeg)) {
+                goA.NotifyCollision(goB);
+                goB.NotifyCollision(goA);
+            }
         }
     }
 }

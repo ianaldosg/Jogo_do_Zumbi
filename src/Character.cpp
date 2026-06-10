@@ -3,12 +3,17 @@
 #include "../include/Animator.h"
 #include "../include/Gun.h"
 #include "../include/Game.h"
+#include "../include/Collider.h"
+#include "../include/Bullet.h"
+#include "../include/Camera.h"
 
 Character* Character::player = nullptr;
 
 Character::Character(GameObject& associated, std::string sprite) : Component(associated), 
     hp(100), 
-    linearSpeed(100.0f) {
+    linearSpeed(100.0f),
+    hitSound("Recursos/audio/Hit1.wav"),
+    deathSound("Recursos/audio/Dead.wav"){
 
     speed = Vec2(0, 0);
 
@@ -28,6 +33,9 @@ Character::Character(GameObject& associated, std::string sprite) : Component(ass
     anim->AddAnimation("walking_left", Animation(0, 5, 0.1f, SDL_FLIP_HORIZONTAL));
     anim->AddAnimation("dead", Animation(10, 11, 0.15f));
     associated.AddComponent(anim);
+
+    // Colisão
+    associated.AddComponent(new Collider(associated));
 }
 
 Character::~Character() {
@@ -95,6 +103,8 @@ void Character::Update(float dt) {
             associated.RequestDelete();
         }
     }
+
+    damageTimer.Update(dt);
 }
 
 void Character::Issue(Command task) {
@@ -104,3 +114,37 @@ void Character::Issue(Command task) {
 void Character::Render() {}
 
 Character::Command::Command(CommandType type, float x, float y) : type(type), pos(x, y) {}
+
+void Character::NotifyCollision(GameObject& other) {
+    // Colisão com Zombie
+    Zombie* zombie = (Zombie*)other.GetComponent<Zombie>();
+    if (zombie != nullptr) {
+        if (damageTimer.Get() >= 1.0f) {
+            hp -= 20;
+            damageTimer.Restart();
+            if (hp > 0) {
+                hitSound.Play(1);
+            } else {
+                deathSound.Play(1);
+                Camera::Unfollow();
+            }
+        }
+        return;
+    }
+
+    // Colisão com Bullet
+    Bullet* bullet = (Bullet*)other.GetComponent<Bullet>();
+    if (bullet == nullptr) return;
+    
+    // Friendly fire
+    if (bullet->targetsPlayer && this != Character::player) return;
+    if (!bullet->targetsPlayer && this == Character::player) return;
+
+    hp -= bullet->GetDamage();
+    if (hp > 0) {
+        hitSound.Play(1);
+    } else {
+        deathSound.Play(1);
+        Camera::Unfollow();
+    }
+}

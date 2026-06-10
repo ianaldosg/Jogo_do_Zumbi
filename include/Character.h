@@ -3,6 +3,7 @@
 #include "Component.h"
 #include "Vec2.h"
 #include "Timer.h"
+#include "Sound.h"
 #include <string>
 #include <memory>
 #include <queue>
@@ -29,6 +30,8 @@ class Character : public Component {
         };
 
         void Issue(Command task);
+
+        void NotifyCollision(GameObject& other);
         
     private:
         std::weak_ptr<GameObject> gun;
@@ -37,5 +40,11 @@ class Character : public Component {
         int hp;
         float linearSpeed;
         Timer deathTimer;
+        Timer damageTimer;
+        Sound hitSound;
+        Sound deathSound;
 
 };
+
+class Zombie;
+class Bullet;
