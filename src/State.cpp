@@ -9,52 +9,7 @@
 #include <algorithm>
 #include <vector>
 
-State::State() : quitRequested(false) {
-    LoadAssets();
-
-    //Criando TileMap
-    GameObject* mapObject = new GameObject();
-
-    TileSet* tileSet = new TileSet(64, 64, "Recursos/img/Tileset.png");
-
-    TileMap* tileMap = new TileMap(*mapObject, "Recursos/map/map.txt", tileSet);
-
-    //Setando Camadas Parallax
-    tileMap->SetParallax(0, 0.2f);
-    tileMap->SetParallax(1, 1.0f);
-    //tileMap->SetParallax(2, 0.2f);
-
-    mapObject-> AddComponent(tileMap);
-
-    mapObject->box.x = 0;
-    mapObject->box.y = 0;
-
-    AddObject(mapObject);
-
-    //Criando Musica
-    music.Play(-1);
-    
-    // Criando Player
-    GameObject* playerGo = new GameObject();
-    Character* ch = new Character(*playerGo, "Recursos/img/Player.png");
-    playerGo->AddComponent(ch);
-    // PlayerController
-    playerGo->AddComponent(new PlayerController(*playerGo));
-
-    // Ponteiro estático
-    Character::player = ch;
-
-    // Posiciona Player no centro do mapa
-    playerGo->box.x = 1280;
-    playerGo->box.y = 1280;
-
-    // Estado
-    AddObject(playerGo);
-
-    // Foco da Camera no Player
-    Camera::Follow(playerGo);
-    
-}
+State::State() : started(false), quitRequested(false) {}
 
 State::~State() {
     objectArray.clear();
@@ -142,10 +97,56 @@ void State::Render(){
 }
 
 void State::Start() {
+    // Mídia Básica
     LoadAssets();
+
+    //Criando TileMap
+    GameObject* mapObject = new GameObject();
+
+    TileSet* tileSet = new TileSet(64, 64, "Recursos/img/Tileset.png");
+
+    TileMap* tileMap = new TileMap(*mapObject, "Recursos/map/map.txt", tileSet);
+
+    //Setando Camadas Parallax
+    tileMap->SetParallax(0, 0.2f);
+    tileMap->SetParallax(1, 1.0f);
+    //tileMap->SetParallax(2, 0.2f);
+
+    mapObject-> AddComponent(tileMap);
+
+    mapObject->box.x = 0;
+    mapObject->box.y = 0;
+
+    AddObject(mapObject);
+
+    //Criando Musica
+    music.Play(-1);
+    
+    // Criando Player
+    GameObject* playerGo = new GameObject();
+    Character* ch = new Character(*playerGo, "Recursos/img/Player.png");
+    playerGo->AddComponent(ch);
+    // PlayerController
+    playerGo->AddComponent(new PlayerController(*playerGo));
+
+    // Ponteiro estático
+    Character::player = ch;
+
+    // Posiciona Player no centro do mapa
+    playerGo->box.x = 1280;
+    playerGo->box.y = 1280;
+
+    // Estado
+    AddObject(playerGo);
+
+    // Foco da Camera no Player
+    Camera::Follow(playerGo);
+
+    // Roda tudo
     for (auto& go : objectArray) {
         go->Start();
     }
+
     started = true;
 }
 
