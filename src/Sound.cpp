@@ -1,9 +1,7 @@
 #include "../include/Sound.h"
 #include "../include/Resources.h"
 
-Sound::Sound() {
-    chunk = nullptr;
-}
+Sound::Sound() : channel(-1), chunk(nullptr){}
 
 Sound::Sound(std::string file) : Sound() {
     Open(file);
