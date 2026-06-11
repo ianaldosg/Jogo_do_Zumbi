@@ -28,10 +28,10 @@ void State::Update(float dt){
         quitRequested = true;
     }
 
-    //Camera Update
+    // Camera Update
     Camera::Update(dt);
 
-    //Criando Zumbi
+    // Criando Zumbi
     if (input.KeyPress(SDLK_SPACE)) {
         GameObject* zombieGO = new GameObject();
 
@@ -44,20 +44,21 @@ void State::Update(float dt){
         AddObject(zombieGO);
     }
 
-    //Atualiza Objetos
-    for (std::size_t i = 0; i < objectArray.size(); i++) {
-        objectArray[i]->Update(dt);
-    }
+    size_t i = objectArray.size();
+    while (i > 0) {
+        i--;
 
-    //Remoção de Objetos Motos
-    for (int i = objectArray.size() - 1; i >= 0; i--){
+        // Atualiza Objetos
+        objectArray[i]->Update(dt);
+
         if (objectArray[i]->IsDead()) {
             objectArray.erase(objectArray.begin() + i);
         }
     }
 
-    for (int i = 0; i < objectArray.size(); i++) {
-        for (int j = i + 1; j < objectArray.size(); j++) {
+    // Loop Colisão
+    for (size_t i = 0; i < objectArray.size(); i++) {
+        for (size_t j = i + 1; j < objectArray.size(); j++) {
             auto& goA = *objectArray[i];
             auto& goB = *objectArray[j];
 
@@ -76,8 +77,6 @@ void State::Update(float dt){
 }
 
 void State::Render(){
-    //bg->Render();
-
     std::vector<GameObject*> renderOrder;
     for (auto& obj : objectArray) {
         renderOrder.push_back(obj.get());

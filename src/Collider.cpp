@@ -3,7 +3,7 @@
 #include "../include/GameObject.h"
 
 Collider::Collider(GameObject& associated, Vec2 scale, Vec2 offset)
-    : Component(associated), scale(scale), offset(offset), box(0, 0, 0, 0) {}
+    : Component(associated), box(0, 0, 0, 0), scale(scale), offset(offset) {}
 
 void Collider::Update(float dt) {
     // Copia box

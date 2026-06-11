@@ -36,8 +36,8 @@ float Vec2::Angulo() const{
 }
 
 float Vec2::Angulo(const Vec2& v) const{
-    Vec2 diferença = v - *this;
-    return atan2(diferença.y, diferença.x);
+    Vec2 diferenca = v - *this;
+    return atan2(diferenca.y, diferenca.x);
 }
 
 Vec2 Vec2::Rotacao(float angulo) const{
