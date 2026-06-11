@@ -9,6 +9,10 @@
 
 class Game {
 public:
+    // Proteção contra copy de Game
+    Game(const Game& other) = delete;
+    Game& operator=(const Game& other) = delete;
+
     static Game& GetInstance(); 
     static Game& GetInstance(std::string title, int width, int height);
 
