@@ -5,6 +5,8 @@
 Game* Game::instance = nullptr;
 
 Game& Game::GetInstance(){
+    // Gerador aleatório
+    srand(time(NULL));
     if (instance == nullptr){
         instance = new Game("Ian Aldo Serwy Gonzales 242039176",1200,900);
     }

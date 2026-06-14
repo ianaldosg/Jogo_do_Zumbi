@@ -1,3 +1,4 @@
+#pragma once
 #include "SDL_include.h"
 #include "Component.h"
 #include "GameObject.h"
@@ -7,6 +8,8 @@
 class Zombie : public Component{
     public:
         Zombie(GameObject& associated);
+
+        ~Zombie();
 
         void Damage(int damage);
 
@@ -21,6 +24,8 @@ class Zombie : public Component{
         Sound deathSound;
 
         void NotifyCollision(GameObject& other);
+
+        static int count;
 
     private:
         int hitpoins;

@@ -5,6 +5,8 @@
 #include "../include/Collider.h"
 #include "../include/Bullet.h"
 
+int Zombie::count = 0;
+
 Zombie::Zombie(GameObject& associated) 
     : Component(associated), hitSound("Recursos/audio/Hit0.wav"), deathSound("Recursos/audio/Dead.wav"), hitpoins(100), hit(false), dead(false){
 
@@ -29,6 +31,9 @@ Zombie::Zombie(GameObject& associated)
 
         // Colisão
         associated.AddComponent(new Collider(associated));
+
+        // Contador
+        count++;
 }
 
 void Zombie::Damage(int damage) {
@@ -80,7 +85,6 @@ void Zombie::Update(float dt) {
         //Parada do loop
         return;
     }
-
     
     //Animação de Walking após 5 segundos do hit
     if (hit && !dead && hitTimer.Get() >= 0.5f) {
@@ -95,6 +99,22 @@ void Zombie::Update(float dt) {
 
     // SortY para Zombie
     associated.sortY = associated.box.y + associated.box.h / 2;
+
+    // Perseguição
+    if (Character::player != nullptr) {
+        Vec2 playerPos = Character::player->GetCenter();
+        Vec2 myPos = associated.box.GetCentroRect();
+        Vec2 direction = playerPos - myPos;
+        direction = direction.Normalizar();
+
+        // Velocidade Constante
+        float speed = 50.f; // ajuste de velocidade
+        associated.box.x += direction.x * speed * dt;
+        associated.box.y += direction.y * speed * dt;
+
+        // Rotaciona para Player
+        associated.angleDeg = atan2(direction.y, direction.x);
+    }
 }
 
 void Zombie::Render() {}
@@ -104,4 +124,8 @@ void Zombie::NotifyCollision(GameObject& other) {
     if (bullet == nullptr) return;
 
     Damage(bullet->GetDamage());
+}
+
+Zombie::~Zombie() {
+    count--;
 }

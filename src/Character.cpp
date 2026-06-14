@@ -172,3 +172,7 @@ void Character::NotifyCollision(GameObject& other) {
 int Character::GetHP() {
     return hp;
 }
+
+Vec2 Character::GetCenter() const {
+    return Vec2(associated.box.x + (associated.box.w / 2.0f), associated.box.y + (associated.box.h / 2.0f));
+}

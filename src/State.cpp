@@ -6,6 +6,7 @@
 #include "../include/PlayerController.h"
 #include "../include/Collision.h"
 #include "../include/Collider.h"
+#include "../include/WaveSpawner.h"
 #include <algorithm>
 #include <vector>
 
@@ -140,6 +141,11 @@ void State::Start() {
 
     // Foco da Camera no Player
     Camera::Follow(playerGo);
+
+    // WaveSpawner
+    GameObject* spawnerGo = new GameObject();
+    spawnerGo->AddComponent(new WaveSpawner(*spawnerGo));
+    AddObject(spawnerGo);
 
     // Roda tudo
     for (auto& go : objectArray) {

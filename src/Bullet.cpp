@@ -68,8 +68,6 @@ void Bullet::NotifyCollision(GameObject& other) {
     // Checagem de friendly fire
     Character* character = (Character*)other.GetComponent<Character>();
     if (character != nullptr) {
-        printf("[Bullet] -> Era Character! targetsPlayer=%d, ehPlayer=%d\n",
-                targetsPlayer, character == Character::player);
         if (targetsPlayer && character != Character::player) return;
         if (!targetsPlayer && character == Character::player) return;
 

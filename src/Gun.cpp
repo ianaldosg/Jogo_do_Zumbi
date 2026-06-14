@@ -116,7 +116,7 @@ void Gun::Shoot(Vec2 target) {
     }
 
     // Adiciona Component
-    auto* bullet = new Bullet(*bulletGO, angle, 400.0f, 10, 500.0f, shooter);
+    auto* bullet = new Bullet(*bulletGO, angle, 400.0f, 25, 500.0f, shooter);
     bulletGO->AddComponent(bullet);
 
     // Estado Atual

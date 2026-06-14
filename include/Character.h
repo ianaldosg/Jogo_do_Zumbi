@@ -34,6 +34,8 @@ class Character : public Component {
         void NotifyCollision(GameObject& other);
 
         int GetHP();
+
+        Vec2 GetCenter() const;
         
     private:
         std::weak_ptr<GameObject> gun;
