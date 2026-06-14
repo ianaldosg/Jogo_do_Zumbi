@@ -96,13 +96,39 @@ void Character::Update(float dt) {
     }
 
     // Morto?
-    if (hp <= 0) {
+    if (hp<= 0 && !dead) {
+        dead = true;
+
         associated.GetComponent<Animator>()->SetAnimation("dead");
+
+        //Som de Morte
+        deathSound.Play(1);
+
+        //Camera
+        Camera::Unfollow();
+
+        // Deleta Gun ao morrer
+        auto gunPtr = gun.lock();
+        if (gunPtr) {
+            gunPtr->RequestDelete();
+        }
+
+        // Para de se mover após morrer
+        while (!taskQueue.empty()) {
+            taskQueue.pop();
+        }
+    }
+
+    if (hp <= 0) {
+        // Contador de Delete
         deathTimer.Update(dt);
         if (deathTimer.Get() > 3.0f) {
             associated.RequestDelete();
         }
     }
+
+    // Sort Y de Character
+    associated.sortY = associated.box.y + associated.box.h / 2;
 
     damageTimer.Update(dt);
 }
@@ -124,9 +150,6 @@ void Character::NotifyCollision(GameObject& other) {
             damageTimer.Restart();
             if (hp > 0) {
                 hitSound.Play(1);
-            } else {
-                deathSound.Play(1);
-                Camera::Unfollow();
             }
         }
         return;
@@ -143,8 +166,9 @@ void Character::NotifyCollision(GameObject& other) {
     hp -= bullet->GetDamage();
     if (hp > 0) {
         hitSound.Play(1);
-    } else {
-        deathSound.Play(1);
-        Camera::Unfollow();
     }
+}
+
+int Character::GetHP() {
+    return hp;
 }

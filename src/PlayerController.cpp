@@ -14,6 +14,7 @@ void PlayerController::Update(float dt) {
 
     Character* character = associated.GetComponent<Character>();
     if (!character) return;
+    if (character->GetHP() <= 0) return;
 
     Vec2 dir(0,0);
 

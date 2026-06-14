@@ -30,14 +30,6 @@ void Gun::Update(float dt) {
         return;
     }
 
-    // Angulo para Mouse
-    //InputManager& input = InputManager::GetInstance();
-    //Vec2 mousePos(input.GetMouseX(), input.GetMouseY());
-    //Vec2 worldMousePos = mousePos + Camera::pos;
-
-    //Vec2 dirMouse = worldMousePos - centroPersonagem;
-    //angle = atan2(dirMouse.y, dirMouse.x);
-
     // Centraliza Arma
     Vec2 centroPersonagem = charPtr->box.GetCentroRect();
     associated.box.x = centroPersonagem.x - (associated.box.w / 2.0f);
@@ -74,15 +66,19 @@ void Gun::Update(float dt) {
     // Espelhamento
     auto* sr = associated.GetComponent<SpriteRenderer>();
     if (sr != nullptr) {
-        if (angleDegrees > 90.0f || angleDegrees < -90.0f) {
-            sr->SetFrame(0, SDL_FLIP_VERTICAL);
-        } else {
-            sr->SetFrame(0, SDL_FLIP_NONE);
+        SDL_RendererFlip flip = (angleDegrees > 90.0f || angleDegrees < -90.0f) 
+            ? SDL_FLIP_VERTICAL : SDL_FLIP_NONE;
+        sr->SetFlip(flip);
+
+        if (cooldownState == 0) {
+            sr->SetFrame(0, flip);
         }
     }
 
     // Gun tem Y = ao de Character
-    associated.sortY = charPtr->box.y + charPtr->box.h / 2;
+    float characterSortY = (charPtr->sortY >= 0)
+        ? charPtr->sortY : (charPtr->box.y + charPtr->box.h /2);
+    associated.sortY = characterSortY;
 }
 
 void Gun::Shoot(Vec2 target) {
@@ -93,8 +89,15 @@ void Gun::Shoot(Vec2 target) {
     Vec2 dir = target - origin;
     angle = atan2(dir.y, dir.x);
 
+    // Desloca para o cano da arma
+    float canoOffset = associated.box.w / 2.0f;
+    origin.x += cos(angle) * canoOffset;
+    origin.y += sin(angle) * canoOffset;
+
     // Inicia som
     shotSound.Play();
+
+    // Cooldown
     cooldownState = 1;
     cdTimer.Restart();
 
@@ -102,8 +105,8 @@ void Gun::Shoot(Vec2 target) {
     auto* bulletGO = new GameObject();
 
     // Bala sai da ponta do cano
-    bulletGO->box.x = origin.x;
-    bulletGO->box.y = origin.y;
+    bulletGO->box.x = origin.x - bulletGO->box.w / 2.0f;
+    bulletGO->box.y = origin.y - bulletGO->box.h / 2.0f;
 
     // Atirador
     Character* shooter = nullptr;
@@ -118,10 +121,6 @@ void Gun::Shoot(Vec2 target) {
 
     // Estado Atual
     Game::GetInstance().GetState().AddObject(bulletGO);
-
-    // Cooldown
-    cooldownState = 1;
-    cdTimer.Restart();
 }
 
 void Gun::Render() {}

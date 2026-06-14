@@ -32,6 +32,8 @@ class SpriteRenderer : public Component{
 
         void SetFrame(int frame, SDL_RendererFlip flip);
 
+        void SetFlip(SDL_RendererFlip flip);
+
     private:
         Sprite sprite;
 };

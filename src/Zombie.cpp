@@ -92,6 +92,9 @@ void Zombie::Update(float dt) {
             anim->SetAnimation("walking");
         }
     }
+
+    // SortY para Zombie
+    associated.sortY = associated.box.y + associated.box.h / 2;
 }
 
 void Zombie::Render() {}

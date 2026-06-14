@@ -61,7 +61,19 @@ int Bullet::GetDamage() {
 void Bullet::NotifyCollision(GameObject& other) {
     // Balas não se destroem
     Bullet* otherBullet = (Bullet*)other.GetComponent<Bullet>();
-    if (otherBullet != nullptr) return;
+    if (otherBullet != nullptr) {
+        return;
+    }
+
+    // Checagem de friendly fire
+    Character* character = (Character*)other.GetComponent<Character>();
+    if (character != nullptr) {
+        printf("[Bullet] -> Era Character! targetsPlayer=%d, ehPlayer=%d\n",
+                targetsPlayer, character == Character::player);
+        if (targetsPlayer && character != Character::player) return;
+        if (!targetsPlayer && character == Character::player) return;
+
+    }
 
     associated.RequestDelete();
 }

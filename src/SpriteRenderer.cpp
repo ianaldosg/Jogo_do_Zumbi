@@ -69,3 +69,7 @@ void SpriteRenderer::SetFrame(int frame, SDL_RendererFlip flip) {
     sprite.SetFrame(frame);
     sprite.SetFlip(flip);
 }
+
+void SpriteRenderer::SetFlip(SDL_RendererFlip flip) {
+    sprite.SetFlip(flip);
+}

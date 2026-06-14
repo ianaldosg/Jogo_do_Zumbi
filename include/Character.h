@@ -32,6 +32,8 @@ class Character : public Component {
         void Issue(Command task);
 
         void NotifyCollision(GameObject& other);
+
+        int GetHP();
         
     private:
         std::weak_ptr<GameObject> gun;
@@ -43,6 +45,7 @@ class Character : public Component {
         Timer damageTimer;
         Sound hitSound;
         Sound deathSound;
+        bool dead;
 
 };
 
