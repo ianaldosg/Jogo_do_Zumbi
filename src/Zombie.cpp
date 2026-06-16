@@ -21,11 +21,12 @@ Zombie::Zombie(GameObject& associated)
         //Animações Zombie
         Animator* anim = new Animator(associated);
 
-        anim->AddAnimation("walking", Animation(0, 3, 0.2f));
+        anim->AddAnimation("walking_right", Animation(0, 3, 0.2f));
+        anim->AddAnimation("walking_left", Animation(0, 3, 0.2f, SDL_FLIP_HORIZONTAL));
         anim->AddAnimation("hit", Animation(4,4,0));
         anim->AddAnimation("dead", Animation(5, 5, 0));
 
-        anim->SetAnimation("walking");
+        anim->SetAnimation("walking_right");
 
         associated.AddComponent(anim);
 
@@ -40,6 +41,7 @@ void Zombie::Damage(int damage) {
 
     hitpoins -= damage;
 
+    //Animações Morto
     if (hitpoins <= 0) {
         dead = true;
 
@@ -54,6 +56,7 @@ void Zombie::Damage(int damage) {
             anim->SetAnimation("dead");
         }
     }
+    // Animações de Dano
     else {
         hit = true;
 
@@ -86,31 +89,44 @@ void Zombie::Update(float dt) {
         return;
     }
     
-    //Animação de Walking após 5 segundos do hit
-    if (hit && !dead && hitTimer.Get() >= 0.5f) {
-        hit = false;
-
-        Animator* anim =
-            (Animator*) associated.GetComponent<Animator>();
-        if (anim != nullptr) {
-            anim->SetAnimation("walking");
-        }
-    }
 
     // SortY para Zombie
     associated.sortY = associated.box.y + associated.box.h / 2;
 
+    // ARRUMAR ESSA BAGUNÇA E FAZER O HIT SER NA MESMA POSIÇÃO QUE ELE ESTAVA!!!
     // Perseguição
     if (Character::player != nullptr) {
         Vec2 playerPos = Character::player->GetCenter();
         Vec2 myPos = associated.box.GetCentroRect();
         Vec2 direction = playerPos - myPos;
         direction = direction.Normalizar();
+        //Animação de Walking após 5 segundos do hit
+        if (!dead) {
+            Animator* anim =
+                (Animator*) associated.GetComponent<Animator>();
+            if (anim != nullptr) {
+                if (!hit) {
+                    // Velocidade Constante
+                    float speed = 50.f; // ajuste de velocidade
+                    associated.box.x += direction.x * speed * dt;
+                    associated.box.y += direction.y * speed * dt;
 
-        // Velocidade Constante
-        float speed = 50.f; // ajuste de velocidade
-        associated.box.x += direction.x * speed * dt;
-        associated.box.y += direction.y * speed * dt;
+                    if (direction.x < 0) {
+                        anim->SetAnimation("walking_left");
+                    } else {
+                        anim->SetAnimation("walking_right");
+                    }
+                }
+                else if (hitTimer.Get() >= 0.5f) {
+                    hit = false;
+                    if (direction.x < 0) {
+                        anim->SetAnimation("walking_left");
+                    } else {
+                        anim->SetAnimation("walking_right");
+                    }
+                }
+            }
+        }
 
         // Rotaciona para Player
         associated.angleDeg = atan2(direction.y, direction.x);

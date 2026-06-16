@@ -54,6 +54,7 @@ void Animator::SetAnimation(std::string name) {
 
         if (sr != nullptr) {
             sr->SetFrame(currentFrame);
+            sr->SetFlip(it->second.flip);
         }
     }
 }

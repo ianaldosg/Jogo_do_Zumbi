@@ -85,9 +85,9 @@ void Character::Update(float dt) {
     if (hp > 0) {
         if (speed.Magnitude() > 0) {
             if (speed.x < 0) {
-                associated.GetComponent<Animator>()->SetAnimation("walking_right");
-            } else {
                 associated.GetComponent<Animator>()->SetAnimation("walking_left");
+            } else {
+                associated.GetComponent<Animator>()->SetAnimation("walking_right");
             }
         }
         else {
