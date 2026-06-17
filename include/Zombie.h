@@ -30,6 +30,7 @@ class Zombie : public Component{
     private:
         int hitpoins;
         bool hit;
+        bool left;
         bool dead;
 };
 

@@ -8,7 +8,7 @@
 int Zombie::count = 0;
 
 Zombie::Zombie(GameObject& associated) 
-    : Component(associated), hitSound("Recursos/audio/Hit0.wav"), deathSound("Recursos/audio/Dead.wav"), hitpoins(100), hit(false), dead(false){
+    : Component(associated), hitSound("Recursos/audio/Hit0.wav"), deathSound("Recursos/audio/Dead.wav"), hitpoins(100), hit(false), left(false),dead(false){
 
         SpriteRenderer* sr = new SpriteRenderer(
                 associated,
@@ -23,7 +23,8 @@ Zombie::Zombie(GameObject& associated)
 
         anim->AddAnimation("walking_right", Animation(0, 3, 0.2f));
         anim->AddAnimation("walking_left", Animation(0, 3, 0.2f, SDL_FLIP_HORIZONTAL));
-        anim->AddAnimation("hit", Animation(4,4,0));
+        anim->AddAnimation("hit_right", Animation(4,4,0));
+        anim->AddAnimation("hit_left", Animation(4,4,0, SDL_FLIP_HORIZONTAL));
         anim->AddAnimation("dead", Animation(5, 5, 0));
 
         anim->SetAnimation("walking_right");
@@ -55,6 +56,8 @@ void Zombie::Damage(int damage) {
         if (anim != nullptr) {
             anim->SetAnimation("dead");
         }
+
+        associated.RemoveComponent(associated.GetComponent<Collider>());
     }
     // Animações de Dano
     else {
@@ -68,7 +71,11 @@ void Zombie::Damage(int damage) {
             (Animator*) associated.GetComponent<Animator>();
 
         if (anim != nullptr) {
-            anim->SetAnimation("hit");
+            if (left) {
+                anim->SetAnimation("hit_left");
+            } else {
+                anim->SetAnimation("hit_right");
+            }
         }
     }
 }
@@ -93,7 +100,7 @@ void Zombie::Update(float dt) {
     // SortY para Zombie
     associated.sortY = associated.box.y + associated.box.h / 2;
 
-    // ARRUMAR ESSA BAGUNÇA E FAZER O HIT SER NA MESMA POSIÇÃO QUE ELE ESTAVA!!!
+    // ARRUMAR ESSA BAGUNÇA
     // Perseguição
     if (Character::player != nullptr) {
         Vec2 playerPos = Character::player->GetCenter();
@@ -112,8 +119,10 @@ void Zombie::Update(float dt) {
                     associated.box.y += direction.y * speed * dt;
 
                     if (direction.x < 0) {
+                        left = true;
                         anim->SetAnimation("walking_left");
                     } else {
+                        left = false;
                         anim->SetAnimation("walking_right");
                     }
                 }
