@@ -3,20 +3,23 @@
 #include "../include/Camera.h"
 #include "../include/GameObject.h"
 #include "../include/Zombie.h"
+#include "../include/NPC.h"
 #include "../include/Game.h"
 
 WaveSpawner::WaveSpawner(GameObject& associated) 
     : Component(associated), 
       zombieCounter(0),
+      npcCounter(0),
       currentWave(0) {
     // Waves
-    waves.emplace_back(5, 2.0f); 
-    waves.emplace_back(8, 1.5f); 
-    waves.emplace_back(12, 1.0f); 
+    waves.emplace_back(5, 1, 2.0f); 
+    waves.emplace_back(8, 3, 1.5f); 
+    waves.emplace_back(12, 5, 1.0f); 
 }
 
 void WaveSpawner::Update(float dt) {
     zombieCooldownTimer.Update(dt);
+    npcCooldownTimer.Update(dt);
 
     Wave& wave = waves[currentWave];
 
@@ -41,14 +44,36 @@ void WaveSpawner::Update(float dt) {
         }
     } else {
         // Todos os Zombies spawnados, esperar morrer
-        if (Zombie::count == 0) {
+        if (Zombie::count == 0 && NPC::count == 0) {
             currentWave++;
             zombieCounter = 0;
+            npcCounter = 0;
 
             if (currentWave >= (int)waves.size()) {
                 // Acabaram as Waves
                 associated.RequestDelete();
             }
+        }
+    }
+
+    // Spawn de NPC's
+    if (npcCounter < wave.npcs) {
+        if (npcCooldownTimer.Get() > wave.cooldown) {
+            // REPETIDO FAZER FUNÇÃO
+            float angle = (rand() % 360) * M_PI / 180.0f;
+            float distance = 1200.0f;
+            Vec2 pos = {
+                Camera::pos.x + distance * (float)cos(angle),
+                Camera::pos.y + distance * (float)sin(angle),
+            };
+            // Cria NPC
+            GameObject* npcGo = new GameObject();
+            npcGo->box.x = pos.x;
+            npcGo->box.y = pos.y;
+            npcGo->AddComponent(new NPC(*npcGo, "Recursos/img/NPC.png"));
+            Game::GetInstance().GetState().AddObject(npcGo);
+            npcCounter++;
+            npcCooldownTimer.Restart();
         }
     }
 }

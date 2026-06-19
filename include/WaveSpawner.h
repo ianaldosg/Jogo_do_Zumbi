@@ -15,8 +15,14 @@ class WaveSpawner : public Component{
         void Render();
 
     private:
-        int zombieCounter;
         std::vector<Wave> waves;
+
+        int zombieCounter;
         Timer zombieCooldownTimer;
+
+        int npcCounter;
+        Timer npcCooldownTimer;
+
         int currentWave;
+
 };

@@ -13,7 +13,7 @@ class Character : public Component {
         static Character* player;
 
         Character(GameObject& associated, std::string sprite);
-        ~Character();
+        virtual ~Character();
 
         void Start();
         void Update(float dt);

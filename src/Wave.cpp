@@ -1,4 +1,4 @@
 #include "../include/Wave.h"
 
-Wave::Wave(int zombies, float cooldown) 
-    : zombies(zombies), cooldown(cooldown) {}
+Wave::Wave(int zombies,int npcs, float cooldown) 
+    : zombies(zombies), npcs(npcs), cooldown(cooldown) {}

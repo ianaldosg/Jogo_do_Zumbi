@@ -110,7 +110,6 @@ void State::Start() {
     //Setando Camadas Parallax
     tileMap->SetParallax(0, 0.2f);
     tileMap->SetParallax(1, 1.0f);
-    //tileMap->SetParallax(2, 0.2f);
 
     mapObject-> AddComponent(tileMap);
 
@@ -124,13 +123,12 @@ void State::Start() {
     
     // Criando Player
     GameObject* playerGo = new GameObject();
-    Character* ch = new Character(*playerGo, "Recursos/img/Player.png");
-    playerGo->AddComponent(ch);
+    playerGo->AddComponent(new Character(*playerGo, "Recursos/img/Player.png"));
     // PlayerController
     playerGo->AddComponent(new PlayerController(*playerGo));
 
     // Ponteiro estático
-    Character::player = ch;
+    Character::player = (Character*)playerGo->GetComponent<Character>();
 
     // Posiciona Player no centro do mapa
     playerGo->box.x = 1280;

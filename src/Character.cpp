@@ -20,7 +20,7 @@ Character::Character(GameObject& associated, std::string sprite) : Component(ass
     //associated.AddComponent(new SpriteRenderer(associated, sprite));
     SpriteRenderer* sr = new SpriteRenderer(
             associated,
-            "Recursos/img/Player.png",
+            sprite,
             3, 4
             );
 
@@ -36,6 +36,7 @@ Character::Character(GameObject& associated, std::string sprite) : Component(ass
 
     // Colisão
     associated.AddComponent(new Collider(associated));
+
 }
 
 Character::~Character() {
@@ -45,6 +46,7 @@ Character::~Character() {
 }
 
 void Character::Start() {
+    // Criando Gun
     GameObject* gunGo = new GameObject();
     gunGo->AddComponent(new Gun(*gunGo, Game::GetInstance().GetState().GameObjectPtr(&associated)));
 
@@ -105,7 +107,9 @@ void Character::Update(float dt) {
         deathSound.Play(1);
 
         //Camera
-        Camera::Unfollow();
+        if (this == Character::player) {
+            Camera::Unfollow();
+        }
 
         // Deleta Gun ao morrer
         auto gunPtr = gun.lock();
@@ -145,7 +149,7 @@ void Character::NotifyCollision(GameObject& other) {
     // Colisão com Zombie
     Zombie* zombie = (Zombie*)other.GetComponent<Zombie>();
     if (zombie != nullptr) {
-        if (damageTimer.Get() >= 1.0f) {
+        if (this == Character::player && damageTimer.Get() >= 1.0f) {
             hp -= 20;
             damageTimer.Restart();
             if (hp > 0) {
