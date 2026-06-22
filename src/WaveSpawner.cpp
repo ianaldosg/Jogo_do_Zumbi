@@ -22,16 +22,15 @@ void WaveSpawner::Update(float dt) {
     npcCooldownTimer.Update(dt);
 
     Wave& wave = waves[currentWave];
+    // LINHA TEMPORÁRIA DE DEBUG:
+std::cout << "ONDA: " << currentWave << " | Zumbis Vivos: " << Zombie::count << " | NPCs Vivos: " << NPC::count << std::endl;
 
+
+    // Gerenciador de Zombies
     if (zombieCounter < wave.zombies) {
         if (zombieCooldownTimer.Get() > wave.cooldown) {
             // Posiciona fora da tela aleatóriamente
-            float angle = (rand() % 360) * M_PI / 180.0f;
-            float distance = 1200.0f;
-            Vec2 pos = {
-                Camera::pos.x + distance * (float)cos(angle),
-                Camera::pos.y + distance * (float)sin(angle),
-            };
+            Vec2 pos = GetRandomSpawnPosition();
             // Cria Zombie
             GameObject* zombieGo = new GameObject();
             zombieGo->box.x = pos.x;
@@ -42,40 +41,51 @@ void WaveSpawner::Update(float dt) {
             zombieCounter ++;
             zombieCooldownTimer.Restart();
         }
-    } else {
-        // Todos os Zombies spawnados, esperar morrer
-        if (Zombie::count == 0 && NPC::count == 0) {
-            currentWave++;
-            zombieCounter = 0;
-            npcCounter = 0;
+    } 
 
-            if (currentWave >= (int)waves.size()) {
-                // Acabaram as Waves
-                associated.RequestDelete();
-            }
-        }
-    }
-
-    // Spawn de NPC's
+    // Gerenciador de NPC's
     if (npcCounter < wave.npcs) {
         if (npcCooldownTimer.Get() > wave.cooldown) {
-            // REPETIDO FAZER FUNÇÃO
-            float angle = (rand() % 360) * M_PI / 180.0f;
-            float distance = 1200.0f;
-            Vec2 pos = {
-                Camera::pos.x + distance * (float)cos(angle),
-                Camera::pos.y + distance * (float)sin(angle),
-            };
+            // Posiciona fora da tela aleatóriamente
+            Vec2 pos = GetRandomSpawnPosition();
             // Cria NPC
             GameObject* npcGo = new GameObject();
             npcGo->box.x = pos.x;
             npcGo->box.y = pos.y;
             npcGo->AddComponent(new NPC(*npcGo, "Recursos/img/NPC.png"));
             Game::GetInstance().GetState().AddObject(npcGo);
+
             npcCounter++;
             npcCooldownTimer.Restart();
+        }
+    } 
+
+    // Controlador de Fim de Wave
+    if (zombieCounter >= wave.zombies && npcCounter >= wave.npcs) {
+        if (Zombie::count == 0 && NPC::count == 0) {
+            currentWave++;
+            zombieCounter = 0;
+            npcCounter = 0;
+
+            // Reset Timer
+            zombieCooldownTimer.Restart();
+            npcCooldownTimer.Restart();
+
+            // Acabaram Waves
+            if (currentWave >= (int)waves.size()) {
+                associated.RequestDelete();
+            }
         }
     }
 }
 
 void WaveSpawner::Render() {}
+
+Vec2 WaveSpawner::GetRandomSpawnPosition() {
+    float angle = (rand() % 360) * M_PI / 180.0f;
+    float distance = 1200.0f;
+    return Vec2 (
+        Camera::pos.x + distance * (float)cos(angle),
+        Camera::pos.y + distance * (float)sin(angle)
+        );
+}

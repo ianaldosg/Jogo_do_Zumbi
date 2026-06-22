@@ -8,7 +8,7 @@ AIController::AIController(GameObject& associated) : Component(associated) {
 }
 
 void AIController::Update(float dt) {
-    if (Character::player == nullptr) {
+    if (Character::player == nullptr || Character::player->IsCharacterDead()) {
         return;
     }
 

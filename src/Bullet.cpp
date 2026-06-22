@@ -2,6 +2,7 @@
 #include "../include/SpriteRenderer.h"
 #include "../include/Collider.h"
 #include "../include/Character.h"
+#include "../include/Zombie.h"
 
 Bullet::Bullet(GameObject& associated,
                 float angle,
@@ -65,13 +66,26 @@ void Bullet::NotifyCollision(GameObject& other) {
         return;
     }
 
-    // Checagem de friendly fire
+    // Pega Components
     Character* character = (Character*)other.GetComponent<Character>();
+    Component* zombie = other.GetComponent<Zombie>();
+
+    // Ignora Character se destinada a ele
+    if (this->targetsPlayer) {
+        if (zombie != nullptr || (Character::player != nullptr && character != Character::player)) {
+            return; 
+        }
+    }
+
     if (character != nullptr) {
+        // Checagem de friendly fire
         if (targetsPlayer && character != Character::player) return;
         if (!targetsPlayer && character == Character::player) return;
 
+        // Ignora Corpo Morto
+        if (character->GetHP() <= 0) return;
     }
+
 
     associated.RequestDelete();
 }

@@ -13,11 +13,11 @@ class Character : public Component {
         static Character* player;
 
         Character(GameObject& associated, std::string sprite);
-        virtual ~Character();
+        virtual ~Character() override;
 
-        void Start();
-        void Update(float dt);
-        void Render();
+        void Start() override;
+        void Update(float dt) override;
+        void Render() override;
 
         class Command{
             public:
@@ -31,11 +31,13 @@ class Character : public Component {
 
         void Issue(Command task);
 
-        void NotifyCollision(GameObject& other);
+        void NotifyCollision(GameObject& other) override;
 
         int GetHP();
 
         Vec2 GetCenter() const;
+
+        bool IsCharacterDead() const { return dead; }
         
     private:
         std::weak_ptr<GameObject> gun;

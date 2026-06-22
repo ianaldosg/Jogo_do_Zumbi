@@ -25,4 +25,6 @@ class WaveSpawner : public Component{
 
         int currentWave;
 
+        Vec2 GetRandomSpawnPosition();
+
 };

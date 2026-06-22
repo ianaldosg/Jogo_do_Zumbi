@@ -13,7 +13,8 @@ Character::Character(GameObject& associated, std::string sprite) : Component(ass
     hp(100), 
     linearSpeed(100.0f),
     hitSound("Recursos/audio/Hit1.wav"),
-    deathSound("Recursos/audio/Dead.wav"){
+    deathSound("Recursos/audio/Dead.wav"),
+    dead(false){
 
     speed = Vec2(0, 0);
 
@@ -40,9 +41,7 @@ Character::Character(GameObject& associated, std::string sprite) : Component(ass
 }
 
 Character::~Character() {
-    if (player == this) {
-        player = nullptr;
-    }
+    if (player == this) { player = nullptr; }
 }
 
 void Character::Start() {
@@ -113,9 +112,7 @@ void Character::Update(float dt) {
 
         // Deleta Gun ao morrer
         auto gunPtr = gun.lock();
-        if (gunPtr) {
-            gunPtr->RequestDelete();
-        }
+        if (gunPtr) { gunPtr->RequestDelete(); }
 
         // Para de se mover após morrer
         while (!taskQueue.empty()) {
@@ -146,6 +143,11 @@ void Character::Render() {}
 Character::Command::Command(CommandType type, float x, float y) : type(type), pos(x, y) {}
 
 void Character::NotifyCollision(GameObject& other) {
+    // Se Character estiver morto deixa de colidir
+    if (this->hp <= 0 || this->dead) {
+        return;
+    }
+
     // Colisão com Zombie
     Zombie* zombie = (Zombie*)other.GetComponent<Zombie>();
     if (zombie != nullptr) {

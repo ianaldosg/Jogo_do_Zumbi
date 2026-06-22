@@ -13,6 +13,13 @@
 State::State() : started(false), quitRequested(false) {}
 
 State::~State() {
+    // Limpa componets internos
+    for (size_t i = 0; i < objectArray.size(); i++) {
+        if (objectArray[i] != nullptr) {
+            objectArray[i]->~GameObject();
+        }
+    }
+
     objectArray.clear();
 }
 
@@ -32,29 +39,9 @@ void State::Update(float dt){
     // Camera Update
     Camera::Update(dt);
 
-    // Criando Zumbi
-    if (input.KeyPress(SDLK_SPACE)) {
-        GameObject* zombieGO = new GameObject();
-
-        Zombie* zombie = new Zombie(*zombieGO);
-        zombieGO->AddComponent(zombie);
-
-        zombieGO->box.x = input.GetMouseX() + Camera::pos.x - (zombieGO->box.w /2);
-        zombieGO->box.y = input.GetMouseY() + Camera::pos.y - (zombieGO->box.h /2);
-
-        AddObject(zombieGO);
-    }
-
-    size_t i = objectArray.size();
-    while (i > 0) {
-        i--;
-
-        // Atualiza Objetos
+    // Atualiza Objetos
+    for (size_t i = 0; i < objectArray.size(); i++) {
         objectArray[i]->Update(dt);
-
-        if (objectArray[i]->IsDead()) {
-            objectArray.erase(objectArray.begin() + i);
-        }
     }
 
     // Loop Colisão
@@ -73,6 +60,16 @@ void State::Update(float dt){
                 goA.NotifyCollision(goB);
                 goB.NotifyCollision(goA);
             }
+        }
+    }
+
+    // Remove quem Morreu
+    size_t i = objectArray.size();
+    while (i > 0) {
+        i--;
+        if (objectArray[i]->IsDead()) {
+            std::cout << "DEBUG STATE: Removendo o objeto do vetor principal!" << std::endl;
+            objectArray.erase(objectArray.begin() + i);
         }
     }
 }

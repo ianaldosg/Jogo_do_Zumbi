@@ -35,7 +35,7 @@ Zombie::Zombie(GameObject& associated)
         associated.AddComponent(new Collider(associated));
 
         // Contador
-        count++;
+        Zombie::count++;
 }
 
 void Zombie::Damage(int damage) {
@@ -57,7 +57,11 @@ void Zombie::Damage(int damage) {
             anim->SetAnimation("dead");
         }
 
-        associated.RemoveComponent(associated.GetComponent<Collider>());
+        Collider* col = (Collider*)associated.GetComponent<Collider>();
+        if (col != nullptr) {
+            col->SetScale(Vec2(0.0f, 0.0f));
+        }
+        //associated.RemoveComponent(associated.GetComponent<Collider>());
     }
     // Animações de Dano
     else {
@@ -81,19 +85,27 @@ void Zombie::Damage(int damage) {
 }
 
 void Zombie::Update(float dt) {
-    hitTimer.Update(dt);
-    deathTimer.Update(dt);
-
+    printf("[ZOMBIE] Update rodando, dead=%d, hp=%d\n", dead, hitpoins);
     //Deleta o Corpo do Zumbi depois de 5 segundos Morto
     if (dead) {
+        // Atualiza relogio de morte
+        deathTimer.Update(dt);
+
         if (Camera::GetFocus() == &associated) {
             Camera::Unfollow();
         }
+
         if (deathTimer.Get() >= 5.0f) {
             associated.RequestDelete();
         }
+
         //Parada do loop
         return;
+    }
+
+    // Atualiza Hit depois de tiro
+    if (hit) {
+        hitTimer.Update(dt);
     }
     
 
@@ -102,13 +114,12 @@ void Zombie::Update(float dt) {
 
     // ARRUMAR ESSA BAGUNÇA
     // Perseguição
-    if (Character::player != nullptr) {
+    if (Character::player != nullptr && !Character::player->IsCharacterDead()) {
         Vec2 playerPos = Character::player->GetCenter();
         Vec2 myPos = associated.box.GetCentroRect();
         Vec2 direction = playerPos - myPos;
         direction = direction.Normalizar();
         //Animação de Walking após 5 segundos do hit
-        if (!dead) {
             Animator* anim =
                 (Animator*) associated.GetComponent<Animator>();
             if (anim != nullptr) {
@@ -126,6 +137,7 @@ void Zombie::Update(float dt) {
                         anim->SetAnimation("walking_right");
                     }
                 }
+                // Stun de Hit
                 else if (hitTimer.Get() >= 0.5f) {
                     hit = false;
                     if (direction.x < 0) {
@@ -135,7 +147,6 @@ void Zombie::Update(float dt) {
                     }
                 }
             }
-        }
 
         // Rotaciona para Player
         associated.angleDeg = atan2(direction.y, direction.x);
@@ -145,12 +156,17 @@ void Zombie::Update(float dt) {
 void Zombie::Render() {}
 
 void Zombie::NotifyCollision(GameObject& other) {
+    if (dead) return;
+
     Bullet* bullet = (Bullet*)other.GetComponent<Bullet>();
-    if (bullet == nullptr) return;
+    if (bullet != nullptr) {
+        if (bullet->targetsPlayer) {
+            return;
+        }
 
-    Damage(bullet->GetDamage());
+        Damage(bullet->GetDamage());
+    }
 }
-
 Zombie::~Zombie() {
-    count--;
+    Zombie::count--;
 }

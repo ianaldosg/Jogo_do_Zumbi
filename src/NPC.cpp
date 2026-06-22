@@ -15,5 +15,5 @@ void NPC::Start() {
 }
 
 NPC::~NPC() {
-    count--;
+    NPC::count--;
 }
