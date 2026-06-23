@@ -13,13 +13,6 @@
 State::State() : started(false), quitRequested(false) {}
 
 State::~State() {
-    // Limpa componets internos
-    for (size_t i = 0; i < objectArray.size(); i++) {
-        if (objectArray[i] != nullptr) {
-            objectArray[i]->~GameObject();
-        }
-    }
-
     objectArray.clear();
 }
 

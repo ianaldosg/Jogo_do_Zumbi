@@ -4,6 +4,9 @@ GameObject::GameObject()
     : started(false), box(0, 0, 0, 0),angleDeg(0) , isDead(false) {}
 
 GameObject::~GameObject(){
+    for (Component* c : components) {
+        delete c;
+    }
     components.clear();
 }
 

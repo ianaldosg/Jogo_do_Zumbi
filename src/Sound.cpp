@@ -34,6 +34,6 @@ bool Sound::IsOpen() {
 Sound::~Sound() {
     if (chunk != nullptr) {
         Stop();
-        Mix_FreeChunk(chunk);
+        chunk = nullptr;
     }
 }
