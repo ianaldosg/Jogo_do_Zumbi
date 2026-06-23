@@ -32,10 +32,6 @@ void TileMap::Load(std::string file) {
         tileMatrix.push_back(tile);
         mapFile >> separator;
     }
-
-    std::cout << "Mapa carregado: " << mapWidth << "x" << mapHeight << " Camadas: " << mapDepth << std::endl;
-    std::cout << "Total de tiles no vetor: " << tileMatrix.size() << std::endl;
-
 }
 
 void TileMap::SetTileSet(TileSet* tileSet) {

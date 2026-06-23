@@ -61,7 +61,6 @@ void State::Update(float dt){
     while (i > 0) {
         i--;
         if (objectArray[i]->IsDead()) {
-            std::cout << "DEBUG STATE: Removendo o objeto do vetor principal!" << std::endl;
             objectArray.erase(objectArray.begin() + i);
         }
     }

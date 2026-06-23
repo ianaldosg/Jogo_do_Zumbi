@@ -85,7 +85,6 @@ void Zombie::Damage(int damage) {
 }
 
 void Zombie::Update(float dt) {
-    printf("[ZOMBIE] Update rodando, dead=%d, hp=%d\n", dead, hitpoins);
     //Deleta o Corpo do Zumbi depois de 5 segundos Morto
     if (dead) {
         // Atualiza relogio de morte

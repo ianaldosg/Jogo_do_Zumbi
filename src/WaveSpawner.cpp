@@ -22,9 +22,6 @@ void WaveSpawner::Update(float dt) {
     npcCooldownTimer.Update(dt);
 
     Wave& wave = waves[currentWave];
-    // LINHA TEMPORÁRIA DE DEBUG:
-std::cout << "ONDA: " << currentWave << " | Zumbis Vivos: " << Zombie::count << " | NPCs Vivos: " << NPC::count << std::endl;
-
 
     // Gerenciador de Zombies
     if (zombieCounter < wave.zombies) {
