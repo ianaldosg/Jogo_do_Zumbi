@@ -47,7 +47,7 @@ Character::~Character() {
 void Character::Start() {
     // Criando Gun
     GameObject* gunGo = new GameObject();
-    gunGo->AddComponent(new Gun(*gunGo, Game::GetInstance().GetState().GameObjectPtr(&associated)));
+    gunGo->AddComponent(new Gun(*gunGo, Game::GetInstance().GetState().GetObjectPtr(&associated)));
 
     gun = Game::GetInstance().GetState().AddObject(gunGo);
 }

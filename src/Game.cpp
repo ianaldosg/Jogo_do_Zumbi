@@ -26,7 +26,7 @@ Game::Game(std::string title, int width, int height) {
     instance = this;
 
     if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_TIMER) != 0) {
-        std::cout << "Erro SDL_Init: " << SDL_GetError() << std::endl;
+         std::cout << "Erro SDL_Init: " << SDL_GetError() << std::endl;
         exit(1);
     }
 
@@ -72,7 +72,7 @@ Game::Game(std::string title, int width, int height) {
         exit(1);
     }
 
-    state = new State();
+    stagestate = new StageState();
 
 }
 
@@ -89,9 +89,9 @@ float Game::GetDeltaTime(){
 }
 
 Game::~Game(){
-    if (state != nullptr) {
-        delete state;
-        state = nullptr;
+    if (stagestate != nullptr) {
+        delete stagestate;
+        stagestate = nullptr;
     }
 
     Resources::ClearImages();
@@ -120,8 +120,8 @@ Game::~Game(){
 }
 
 
-State& Game::GetState(){
-    return *state;
+StageState& Game::GetState(){
+    return *stagestate;
 }
 
 SDL_Renderer* Game::GetRenderer() {
@@ -129,17 +129,17 @@ SDL_Renderer* Game::GetRenderer() {
 }
 
 void Game::Run(){
-    state->Start();
+    stagestate->Start();
 
-    while (!state->QuitRequested()){
+    while (!stagestate->QuitRequested()){
         CalculateDeltaTime();
 
         InputManager::GetInstance().Update();
 
-        state->Update(GetDeltaTime());
+        stagestate->Update(GetDeltaTime());
 
         SDL_RenderClear(renderer);
-        state->Render();
+        stagestate->Render();
         SDL_RenderPresent(renderer);
 
         SDL_Delay(16);

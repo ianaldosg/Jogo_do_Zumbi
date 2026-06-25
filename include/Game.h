@@ -3,7 +3,7 @@
 #define INCLUDE_SDL_IMAGE
 #define INCLUDE_SDL_MIXER
 #include "SDL_include.h"
-#include "State.h"
+#include "StageState.h"
 #include <iostream>
 #include <string>
 #include <cstdlib>
@@ -20,7 +20,7 @@ public:
 
     float GetDeltaTime();
 
-    State& GetState();
+    StageState& GetState();
 
     SDL_Renderer* GetRenderer();
 
@@ -35,7 +35,7 @@ private:
 
     SDL_Window* window;
     SDL_Renderer* renderer;
-    State* state;
+    StageState* stagestate;
 
     int frameStart;
     float dt;

@@ -1,40 +1,37 @@
-#define INCLUDE_SDL
-
 #pragma once
-#include "SDL_include.h"
-#include "Music.h"
-#include "GameObject.h"
-#include "Zombie.h"
-#include "TileMap.h"
+
 #include <vector>
 #include <memory>
 
+class GameObject;
+
 class State {
-public:
-    State();
-    ~State();
+    public:
+        State();
+        virtual ~State();
 
-    void LoadAssets();
+        virtual void LoadAssets();
+        virtual void Update(float dt);
+        virtual void Render();
 
-    void Update(float dt);
-    void Render(); 
+        virtual void Start();
+        virtual void Pause();
+        virtual void Resume();
 
-    void Start();
+        virtual std::weak_ptr<GameObject> AddObject(GameObject* object);
+        virtual std::weak_ptr<GameObject> GetObjectPtr(GameObject* object);
 
-    std::weak_ptr<GameObject> AddObject(GameObject* go);
-    std::weak_ptr<GameObject> GameObjectPtr(GameObject* go);
-    //void AddObject(GameObject* go);
+        bool PopRequested();
+        bool QuitRequested();
 
+    protected:
+        void StartArray();
+        virtual void UpdateArray(float dt);
+        virtual void RenderArray();
 
+        bool popRequested;
+        bool quitRequested;
+        bool started;
 
-    bool QuitRequested();
-
-private:
-    Sprite bg;
-    Music music;
-
-    bool started;
-    std::vector<std::shared_ptr<GameObject>> objectArray;
-
-    bool quitRequested;
+        std::vector<std::shared_ptr<GameObject>> objectArray;
 };
