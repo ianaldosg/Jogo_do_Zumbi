@@ -33,7 +33,7 @@ void WaveSpawner::Update(float dt) {
             zombieGo->box.x = pos.x;
             zombieGo->box.y = pos.y;
             zombieGo->AddComponent(new Zombie(*zombieGo));
-            Game::GetInstance().GetState().AddObject(zombieGo);
+            Game::GetInstance().GetCurrentState().AddObject(zombieGo);
 
             zombieCounter ++;
             zombieCooldownTimer.Restart();
@@ -50,7 +50,7 @@ void WaveSpawner::Update(float dt) {
             npcGo->box.x = pos.x;
             npcGo->box.y = pos.y;
             npcGo->AddComponent(new NPC(*npcGo, "Recursos/img/NPC.png"));
-            Game::GetInstance().GetState().AddObject(npcGo);
+            Game::GetInstance().GetCurrentState().AddObject(npcGo);
 
             npcCounter++;
             npcCooldownTimer.Restart();

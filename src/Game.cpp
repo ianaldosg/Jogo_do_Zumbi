@@ -13,8 +13,8 @@ Game& Game::GetInstance(){
     return *instance;
 }
 
-Game::Game(std::string title, int width, int height) {
-    
+Game::Game(std::string title, int width, int height)  : storedState(nullptr) {
+
     frameStart = SDL_GetTicks();
     dt = 0;
 
@@ -26,7 +26,7 @@ Game::Game(std::string title, int width, int height) {
     instance = this;
 
     if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_TIMER) != 0) {
-         std::cout << "Erro SDL_Init: " << SDL_GetError() << std::endl;
+        std::cout << "Erro SDL_Init: " << SDL_GetError() << std::endl;
         exit(1);
     }
 
@@ -50,30 +50,27 @@ Game::Game(std::string title, int width, int height) {
     Mix_AllocateChannels(32);
 
     window = SDL_CreateWindow(
-        title.c_str(), 
-        SDL_WINDOWPOS_CENTERED, 
-        SDL_WINDOWPOS_CENTERED, 
-        width, 
-        height, 
-        0
-    );
+            title.c_str(), 
+            SDL_WINDOWPOS_CENTERED, 
+            SDL_WINDOWPOS_CENTERED, 
+            width, 
+            height, 
+            0
+            );
     if (window == nullptr) {
         std::cout << "Erro SDL_CreateWindow: " << SDL_GetError() << std::endl;
         exit(1);
     }
 
     renderer = SDL_CreateRenderer(
-        window, 
-        -1, 
-        SDL_RENDERER_ACCELERATED
-    );
+            window, 
+            -1, 
+            SDL_RENDERER_ACCELERATED
+            );
     if (renderer == nullptr) {
         std::cout << "Erro SDL_CreateRenderer: " << SDL_GetError() << std::endl;
         exit(1);
     }
-
-    stagestate = new StageState();
-
 }
 
 void Game::CalculateDeltaTime(){
@@ -89,9 +86,13 @@ float Game::GetDeltaTime(){
 }
 
 Game::~Game(){
-    if (stagestate != nullptr) {
-        delete stagestate;
-        stagestate = nullptr;
+    if (storedState!= nullptr) {
+        delete storedState;
+        storedState = nullptr;
+    }
+
+    while (!stateStack.empty()) {
+        stateStack.pop();
     }
 
     Resources::ClearImages();
@@ -120,30 +121,71 @@ Game::~Game(){
 }
 
 
-StageState& Game::GetState(){
-    return *stagestate;
+State& Game::GetCurrentState(){
+    return *stateStack.top();
+}
+
+void Game::Push(State* state) {
+    storedState = state;
 }
 
 SDL_Renderer* Game::GetRenderer() {
     return renderer;
 }
 
-void Game::Run(){
-    stagestate->Start();
+void Game::Run() {
+    // Estado Inicial
+    if (storedState != nullptr) {
+        stateStack.emplace(storedState);
+        storedState = nullptr;
+        stateStack.top()->Start();
+    }
 
-    while (!stagestate->QuitRequested()){
+    // Loop de pilha vazia ou quit
+    while (!stateStack.empty() && !stateStack.top()->QuitRequested()) {
         CalculateDeltaTime();
 
+        // Gerenciamento de Pilha
+        // Estado atual removido?
+        if (stateStack.top()->PopRequested()) {
+            stateStack.pop();
+            if (!stateStack.empty()) {
+                stateStack.top()->Resume();
+            }
+            continue;
+        }
+
+        // Novo Estado
+        if (storedState != nullptr) {
+            if (!stateStack.empty()) {
+                stateStack.top()->Pause();
+            }
+            stateStack.emplace(storedState);
+            storedState = nullptr;
+            stateStack.top()->Start();
+            continue;
+        }
+
+        // Loop normal do Game
         InputManager::GetInstance().Update();
 
-        stagestate->Update(GetDeltaTime());
+        stateStack.top()->Update(dt);
 
         SDL_RenderClear(renderer);
-        stagestate->Render();
+        stateStack.top()->Render();
         SDL_RenderPresent(renderer);
 
         SDL_Delay(16);
     }
+
+    // Limpa storedState residual
+    if (storedState != nullptr) {
+        delete storedState;
+        storedState = nullptr;
+    }
+
+    // Esvazia Pilha antes de sair de Run
+    while (!stateStack.empty()) {
+        stateStack.pop();
+    }
 }
-
-

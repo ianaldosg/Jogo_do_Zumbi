@@ -1,10 +1,11 @@
 #include "../include/Character.h"
+#include "../include/Game.h"
 #include "../include/SpriteRenderer.h"
 #include "../include/Animator.h"
 #include "../include/Gun.h"
-#include "../include/Game.h"
-#include "../include/Collider.h"
 #include "../include/Bullet.h"
+#include "../include/Zombie.h"
+#include "../include/Collider.h"
 #include "../include/Camera.h"
 
 Character* Character::player = nullptr;
@@ -47,9 +48,9 @@ Character::~Character() {
 void Character::Start() {
     // Criando Gun
     GameObject* gunGo = new GameObject();
-    gunGo->AddComponent(new Gun(*gunGo, Game::GetInstance().GetState().GetObjectPtr(&associated)));
+    gunGo->AddComponent(new Gun(*gunGo, Game::GetInstance().GetCurrentState().GetObjectPtr(&associated)));
 
-    gun = Game::GetInstance().GetState().AddObject(gunGo);
+    gun = Game::GetInstance().GetCurrentState().AddObject(gunGo);
 }
 
 void Character::Update(float dt) {
@@ -151,6 +152,9 @@ void Character::NotifyCollision(GameObject& other) {
     // Colisão com Zombie
     Zombie* zombie = (Zombie*)other.GetComponent<Zombie>();
     if (zombie != nullptr) {
+        if (zombie->IsDead()) {
+            return;
+        }
         if (this == Character::player && damageTimer.Get() >= 1.0f) {
             hp -= 20;
             damageTimer.Restart();

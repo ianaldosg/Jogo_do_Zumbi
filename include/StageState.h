@@ -2,6 +2,7 @@
 
 #pragma once
 #include "SDL_include.h"
+#include "State.h"
 #include "Music.h"
 #include "GameObject.h"
 #include "Zombie.h"
@@ -9,31 +10,22 @@
 #include <vector>
 #include <memory>
 
-class StageState {
+class StageState : public State {
 public:
     StageState();
     ~StageState();
 
-    void LoadAssets();
 
+    void LoadAssets();
     void Update(float dt);
     void Render(); 
 
     void Start();
-
-    std::weak_ptr<GameObject> AddObject(GameObject* go);
-    std::weak_ptr<GameObject> GetObjectPtr(GameObject* go);
-
-
-
-    bool QuitRequested();
+    void Pause();
+    void Resume();
 
 private:
+    TileSet* tileSet;
     Sprite bg;
     Music music;
-
-    bool started;
-    std::vector<std::shared_ptr<GameObject>> objectArray;
-
-    bool quitRequested;
 };

@@ -120,7 +120,7 @@ void Gun::Shoot(Vec2 target) {
     bulletGO->AddComponent(bullet);
 
     // Estado Atual
-    Game::GetInstance().GetState().AddObject(bulletGO);
+    Game::GetInstance().GetCurrentState().AddObject(bulletGO);
 }
 
 void Gun::Render() {}

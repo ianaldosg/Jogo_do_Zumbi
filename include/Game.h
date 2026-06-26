@@ -3,42 +3,46 @@
 #define INCLUDE_SDL_IMAGE
 #define INCLUDE_SDL_MIXER
 #include "SDL_include.h"
-#include "StageState.h"
+#include "State.h"
 #include <iostream>
 #include <string>
 #include <cstdlib>
 #include <ctime>
+#include <stack>
+#include <memory>
 
 class Game {
 public:
-    // Proteção contra copy de Game
-    Game(const Game& other) = delete;
-    Game& operator=(const Game& other) = delete;
+    ~Game();
+
 
     static Game& GetInstance(); 
     static Game& GetInstance(std::string title, int width, int height);
+    State& GetCurrentState();
 
-    float GetDeltaTime();
-
-    StageState& GetState();
-
-    SDL_Renderer* GetRenderer();
-
-    ~Game();
+    void Push(State* state);
 
     void Run();
 
+    float GetDeltaTime();
+
+    SDL_Renderer* GetRenderer();
+
+    // Proteção contra copy de Game
+    Game(const Game& other) = delete;
+    Game& operator=(const Game& other) = delete;
 private:
     Game(std::string title, int width, int height);
 
+    void CalculateDeltaTime();
+    float dt;
+
     static Game* instance;
 
+    State* storedState;
     SDL_Window* window;
     SDL_Renderer* renderer;
-    StageState* stagestate;
+    std::stack<std::unique_ptr<State>> stateStack;
 
     int frameStart;
-    float dt;
-    void CalculateDeltaTime();
 };
-

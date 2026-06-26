@@ -1,5 +1,4 @@
 #include "../include/StageState.h"
-#include "../include/Sprite.h"
 #include "../include/InputManager.h"
 #include "../include/Camera.h"
 #include "../include/Character.h"
@@ -10,11 +9,9 @@
 #include <algorithm>
 #include <vector>
 
-StageState::StageState() : started(false), quitRequested(false) {}
+StageState::StageState() : State() {}
 
-StageState::~StageState() {
-    objectArray.clear();
-}
+StageState::~StageState() {}
 
 void StageState::LoadAssets(){
     bg.Open("Recursos/img/Background.png");
@@ -25,17 +22,18 @@ void StageState::Update(float dt){
 
     InputManager& input = InputManager::GetInstance();
 
-    if (input.KeyPress(ESCAPE_KEY) || input.QuitRequested()) {
+    if (input.QuitRequested()) {
         quitRequested = true;
+    }
+    if (input.KeyPress(ESCAPE_KEY)) {
+        popRequested = true;
     }
 
     // Camera Update
     Camera::Update(dt);
 
     // Atualiza Objetos
-    for (size_t i = 0; i < objectArray.size(); i++) {
-        objectArray[i]->Update(dt);
-    }
+    UpdateArray(dt);
 
     // Loop Colisão
     for (size_t i = 0; i < objectArray.size(); i++) {
@@ -135,31 +133,11 @@ void StageState::Start() {
     AddObject(spawnerGo);
 
     // Roda tudo
-    for (auto& go : objectArray) {
-        go->Start();
-    }
-
+    StartArray();
     started = true;
+
 }
 
-std::weak_ptr<GameObject> StageState::AddObject(GameObject* go) {
-    std::shared_ptr<GameObject> sharedGo(go);
-    objectArray.push_back(sharedGo);
-    if (started) {
-        sharedGo->Start();
-    }
-    return std::weak_ptr<GameObject>(sharedGo);
-}
+void StageState::Pause() {}
 
-std::weak_ptr<GameObject> StageState::GetObjectPtr(GameObject* go) {
-    for (auto& sharedGo : objectArray) {
-        if (sharedGo.get() == go) {
-            return std::weak_ptr<GameObject>(sharedGo);
-        }
-    }
-    return std::weak_ptr<GameObject>();
-}
-
-bool StageState::QuitRequested(){
-    return quitRequested;
-}
+void StageState::Resume() {}

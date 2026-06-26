@@ -27,6 +27,8 @@ class Zombie : public Component{
 
         static int count;
 
+        bool IsDead() const { return dead; }
+
     private:
         int hitpoins;
         bool hit;

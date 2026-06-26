@@ -10,13 +10,13 @@ class State {
         State();
         virtual ~State();
 
-        virtual void LoadAssets();
-        virtual void Update(float dt);
-        virtual void Render();
+        virtual void LoadAssets() = 0;
+        virtual void Update(float dt) = 0;
+        virtual void Render() = 0;
 
-        virtual void Start();
-        virtual void Pause();
-        virtual void Resume();
+        virtual void Start() = 0;
+        virtual void Pause() = 0;
+        virtual void Resume() = 0;
 
         virtual std::weak_ptr<GameObject> AddObject(GameObject* object);
         virtual std::weak_ptr<GameObject> GetObjectPtr(GameObject* object);
