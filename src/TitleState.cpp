@@ -6,9 +6,24 @@
 #include "../include/Camera.h"
 
 TitleState::TitleState() : State() {
+    // Título
     GameObject* titleGo = new GameObject();
     titleGo->AddComponent(new SpriteRenderer(*titleGo, "Recursos/img/Title.png"));
     AddObject(titleGo);
+
+    // Text
+    GameObject* promptGo = new GameObject();
+    SDL_Color white = {255, 255, 255, 255};
+    Text* text = new Text(*promptGo, "Recursos/font/neodgm.ttf", 28,
+                        Text::BLENDED, "Pressione espaco para continuar", white);
+    promptGo->AddComponent(text);
+    promptGo->box.x = 380;
+    promptGo->box.y = 750;
+    promptText = text;
+    AddObject(promptGo);
+
+    showPrompt = true;
+    blinkTimer.Restart();
 }
 
 TitleState::~TitleState() {}
@@ -33,6 +48,8 @@ void TitleState::Resume() {
 void TitleState::Update(float dt) {
     InputManager& input = InputManager::GetInstance();
 
+    blinkTimer.Update(dt);
+
     // ESC ou Fechar janela Game morre
     if (input.KeyPress(ESCAPE_KEY) || input.QuitRequested()) {
         quitRequested = true;
@@ -41,6 +58,13 @@ void TitleState::Update(float dt) {
     // Espaço Inicia StageState
     if (input.KeyPress(SDLK_SPACE)) {
         Game::GetInstance().Push(new StageState());
+    }
+
+    // Pisca pisca Text
+    if (blinkTimer.Get() > 0.5f) {
+        showPrompt = !showPrompt;
+        promptText->SetText(showPrompt ? "Pressione espaco para continuar" : "");
+        blinkTimer.Restart();
     }
     
     UpdateArray(dt);

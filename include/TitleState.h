@@ -3,6 +3,8 @@
 #include "State.h"
 #include "Sprite.h"
 #include "GameObject.h"
+#include "Text.h"
+#include "Timer.h"
 
 class TitleState : public State {
     public:
@@ -16,4 +18,8 @@ class TitleState : public State {
         void Start();
         void Pause();
         void Resume();
+
+        Text* promptText;
+        Timer blinkTimer;
+        bool showPrompt;
 };

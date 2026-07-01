@@ -49,6 +49,11 @@ Game::Game(std::string title, int width, int height)  : storedState(nullptr) {
     }
     Mix_AllocateChannels(32);
 
+    if (TTF_Init() != 0) {
+        std::cout << "Erro TTF_Init" << TTF_GetError() << std::endl;
+        exit(1);
+    }
+
     window = SDL_CreateWindow(
             title.c_str(), 
             SDL_WINDOWPOS_CENTERED, 
@@ -108,6 +113,8 @@ Game::~Game(){
         SDL_DestroyWindow(window);
         window = nullptr;
     }
+
+    TTF_Quit();
 
     Mix_CloseAudio();
 
