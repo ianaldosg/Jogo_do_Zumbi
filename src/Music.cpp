@@ -13,7 +13,11 @@ Music::Music(std::string file){
 void Music::Play(int times){
     if (music == nullptr) {
         std::cout << " Erro: musica não carregada!" << std::endl;
+        return;
     }
+    
+    Mix_VolumeMusic(3);
+
     Mix_PlayMusic(music, times);
 }
 
@@ -36,7 +40,6 @@ bool Music::IsOpen(){
 Music::~Music(){
     if (music != nullptr) {
         Stop(0);
-        Mix_FreeMusic(music);
         music = nullptr;
     }
 }

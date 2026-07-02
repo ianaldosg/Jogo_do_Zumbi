@@ -11,6 +11,10 @@ void Sound::Play(int times) {
     if (chunk != nullptr) {
         channel = Mix_PlayChannel(-1, chunk, times -1);
     }
+
+    if (channel != -1) {
+        Mix_Volume(channel, 3);
+    }
 }
 
 void Sound::Stop() {
