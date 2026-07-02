@@ -31,6 +31,7 @@ TitleState::~TitleState() {}
 void TitleState::LoadAssets() {}
 
 void TitleState::Start() {
+    LoadAssets();
     // Camera fica Centralizada no Title
     Camera::Unfollow();
     Camera::pos = {0.0f, 0.0f};

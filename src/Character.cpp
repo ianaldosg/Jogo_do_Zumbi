@@ -133,6 +133,20 @@ void Character::Update(float dt) {
     associated.sortY = associated.box.y + associated.box.h / 2;
 
     damageTimer.Update(dt);
+
+    // Limite de Mapa X
+    if (associated.box.x < 640.0f) {
+        associated.box.x = 640.0f;
+    } else if (associated.box.x + associated.box.w > 1920.0f) {
+        associated.box.x = 1920.0f - associated.box.w;
+    }
+
+    // Limite de Mapa Y
+    if (associated.box.y < 512.0f) {
+        associated.box.y = 512.0f;
+    } else if (associated.box.y + associated.box.h > 2048.0f) {
+        associated.box.y = 2048.0f - associated.box.h;
+    }
 }
 
 void Character::Issue(Command task) {

@@ -61,7 +61,6 @@ void Zombie::Damage(int damage) {
         if (col != nullptr) {
             col->SetScale(Vec2(0.0f, 0.0f));
         }
-        //associated.RemoveComponent(associated.GetComponent<Collider>());
     }
     // Animações de Dano
     else {
@@ -106,7 +105,7 @@ void Zombie::Update(float dt) {
     if (hit) {
         hitTimer.Update(dt);
     }
-    
+
 
     // SortY para Zombie
     associated.sortY = associated.box.y + associated.box.h / 2;
@@ -119,36 +118,50 @@ void Zombie::Update(float dt) {
         Vec2 direction = playerPos - myPos;
         direction = direction.Normalizar();
         //Animação de Walking após 5 segundos do hit
-            Animator* anim =
-                (Animator*) associated.GetComponent<Animator>();
-            if (anim != nullptr) {
-                if (!hit) {
-                    // Velocidade Constante
-                    float speed = 50.f; // ajuste de velocidade
-                    associated.box.x += direction.x * speed * dt;
-                    associated.box.y += direction.y * speed * dt;
+        Animator* anim =
+            (Animator*) associated.GetComponent<Animator>();
+        if (anim != nullptr) {
+            if (!hit) {
+                // Velocidade Constante
+                float speed = 50.f; // ajuste de velocidade
+                associated.box.x += direction.x * speed * dt;
+                associated.box.y += direction.y * speed * dt;
 
-                    if (direction.x < 0) {
-                        left = true;
-                        anim->SetAnimation("walking_left");
-                    } else {
-                        left = false;
-                        anim->SetAnimation("walking_right");
-                    }
-                }
-                // Stun de Hit
-                else if (hitTimer.Get() >= 0.5f) {
-                    hit = false;
-                    if (direction.x < 0) {
-                        anim->SetAnimation("walking_left");
-                    } else {
-                        anim->SetAnimation("walking_right");
-                    }
+                if (direction.x < 0) {
+                    left = true;
+                    anim->SetAnimation("walking_left");
+                } else {
+                    left = false;
+                    anim->SetAnimation("walking_right");
                 }
             }
+            // Stun de Hit
+            else if (hitTimer.Get() >= 0.5f) {
+                hit = false;
+                if (direction.x < 0) {
+                    anim->SetAnimation("walking_left");
+                } else {
+                    anim->SetAnimation("walking_right");
+                }
+            }
+        }
 
         // Rotaciona para Player
         associated.angleDeg = atan2(direction.y, direction.x);
+    }
+
+    // Limite de Mapa X
+    if (associated.box.x < 640.0f) {
+        associated.box.x = 640.0f;
+    } else if (associated.box.x + associated.box.w > 1920.0f) {
+        associated.box.x = 1920.0f - associated.box.w;
+    }
+
+    // Limite de Mapa Y
+    if (associated.box.y < 512.0f) {
+        associated.box.y = 512.0f;
+    } else if (associated.box.y + associated.box.h > 2048.0f) {
+        associated.box.y = 2048.0f - associated.box.h;
     }
 }
 

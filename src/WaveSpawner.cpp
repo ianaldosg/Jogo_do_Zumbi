@@ -87,8 +87,26 @@ void WaveSpawner::Render() {}
 Vec2 WaveSpawner::GetRandomSpawnPosition() {
     float angle = (rand() % 360) * M_PI / 180.0f;
     float distance = 1200.0f;
-    return Vec2 (
-        Camera::pos.x + distance * (float)cos(angle),
-        Camera::pos.y + distance * (float)sin(angle)
-        );
+
+    // Calcula Spawn fora da area da Camera
+    float rawX =Camera::pos.x + distance * (float)cos(angle);
+    float rawY =Camera::pos.y + distance * (float)sin(angle);
+
+    // Define limites Mapa
+    // Limite X
+    float minX = 640.0f; 
+    float maxX = 1920.0f; 
+
+    // Limite Y
+    float minY = 512.0f; 
+    float maxY = 2048.0f; 
+
+    // Força coordenada a ficar dentro do limite
+    if (rawX < minX) rawX = minX;
+    if (rawX < maxX) rawX = maxX;
+
+    if (rawY < minY) rawY = minY;
+    if (rawY < minY) rawX = maxY;
+
+    return Vec2(rawX, rawY);
 }

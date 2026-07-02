@@ -36,6 +36,7 @@ EndState::~EndState() {}
 void EndState::LoadAssets() {}
 
 void EndState::Start() {
+    LoadAssets();
     backgroundMusic.Play(-1);
     StartArray();
 }
