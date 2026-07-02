@@ -6,11 +6,16 @@
 #include "../include/NPC.h"
 #include "../include/Game.h"
 
+WaveSpawner* WaveSpawner::spawner = nullptr;
+
 WaveSpawner::WaveSpawner(GameObject& associated) 
     : Component(associated), 
       zombieCounter(0),
       npcCounter(0),
       currentWave(0) {
+    // Salvando Endereço
+    WaveSpawner::spawner = this;
+
     // Waves
     waves.emplace_back(5, 1, 2.0f); 
     waves.emplace_back(8, 3, 1.5f); 
@@ -70,6 +75,7 @@ void WaveSpawner::Update(float dt) {
 
             // Acabaram Waves
             if (currentWave >= (int)waves.size()) {
+                wavesDone = true;
                 associated.RequestDelete();
             }
         }

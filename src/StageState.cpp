@@ -6,6 +6,9 @@
 #include "../include/Collision.h"
 #include "../include/Collider.h"
 #include "../include/WaveSpawner.h"
+#include "../include/GameData.h"
+#include "../include/Game.h"
+#include "../include/EndState.h"
 #include <algorithm>
 #include <vector>
 
@@ -61,6 +64,20 @@ void StageState::Update(float dt){
         if (objectArray[i]->IsDead()) {
             objectArray.erase(objectArray.begin() + i);
         }
+    }
+
+    // Derrota
+    if (Character::player == nullptr || Character::player-> IsCharacterDead()) {
+        GameData::playerVictory = false;
+        Game::GetInstance().Push(new EndState());
+        popRequested = true;
+    }
+
+    // Vitória
+    if (WaveSpawner::spawner != nullptr && WaveSpawner::spawner->IsDone()) {
+        GameData::playerVictory = true;
+        Game::GetInstance().Push(new EndState());
+        popRequested = true;
     }
 }
 

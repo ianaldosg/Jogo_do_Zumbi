@@ -14,6 +14,10 @@ class WaveSpawner : public Component{
         void Update(float dt);
         void Render();
 
+        static WaveSpawner* spawner;
+
+        bool IsDone() const { return wavesDone;}
+
     private:
         std::vector<Wave> waves;
 
@@ -26,5 +30,7 @@ class WaveSpawner : public Component{
         int currentWave;
 
         Vec2 GetRandomSpawnPosition();
+
+        bool wavesDone = false;
 
 };

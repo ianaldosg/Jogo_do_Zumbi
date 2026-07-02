@@ -31,8 +31,8 @@ class Text : public Component {
         SDL_Texture* texture;
 
         std::string text;
-        SDL_Color color;
         TextStyle style;
         std::string fontFile;
         int fontSize;
+        SDL_Color color;
 };
