@@ -5,6 +5,7 @@
 #include "Component.h"
 #include "SDL_include.h"
 #include <string>
+#include <memory>
 
 class Text : public Component {
     public:
@@ -27,7 +28,7 @@ class Text : public Component {
     private:
         void RemakeTexture();
 
-        TTF_Font* font;
+        std::shared_ptr<TTF_Font> font;
         SDL_Texture* texture;
 
         std::string text;

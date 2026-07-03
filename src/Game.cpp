@@ -103,6 +103,7 @@ Game::~Game(){
     Resources::ClearImages();
     Resources::ClearMusic();
     Resources::ClearSounds();
+    Resources::ClearFonts();
 
     if (renderer != nullptr) {
         SDL_DestroyRenderer(renderer);

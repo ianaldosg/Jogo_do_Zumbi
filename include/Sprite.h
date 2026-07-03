@@ -4,6 +4,7 @@
 #include "SDL_include.h"
 #include "Vec2.h"
 #include <string>
+#include <memory>
 
 class Sprite{
 public:
@@ -32,7 +33,7 @@ public:
 
     void SetParallax(float factor);
 
-    SDL_Texture* GetTexture() {return texture;}
+    std::shared_ptr<SDL_Texture> GetTexture() {return texture;}
 
     void SetScale(float scaleX, float scaleY);
     Vec2 GetScale();
@@ -40,7 +41,7 @@ public:
     void SetFlip(SDL_RendererFlip flip);
 
 private:
-    SDL_Texture* texture;
+    std::shared_ptr<SDL_Texture> texture;
     SDL_Rect clipRect;
 
     int width;

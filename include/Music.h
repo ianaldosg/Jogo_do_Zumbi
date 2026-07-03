@@ -5,6 +5,7 @@
 #include "SDL_include.h"
 #include <iostream>
 #include <string>
+#include <memory>
 
 class Music{
 public:
@@ -17,5 +18,5 @@ public:
     bool IsOpen();
 
 private:
-    Mix_Music* music;
+    std::shared_ptr<Mix_Music> music;
 };

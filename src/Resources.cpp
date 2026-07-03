@@ -1,12 +1,12 @@
 #include "../include/Resources.h"
 #include "../include/Game.h"
 
-std::unordered_map<std::string, SDL_Texture*> Resources::imageTable;
-std::unordered_map<std::string, Mix_Music*> Resources::musicTable;
-std::unordered_map<std::string, Mix_Chunk*> Resources::soundTable;
-std::unordered_map<std::string, TTF_Font*> Resources::fontTable;
+std::unordered_map<std::string, std::shared_ptr<SDL_Texture>> Resources::imageTable;
+std::unordered_map<std::string, std::shared_ptr<Mix_Music>> Resources::musicTable;
+std::unordered_map<std::string, std::shared_ptr<Mix_Chunk>> Resources::soundTable;
+std::unordered_map<std::string, std::shared_ptr<TTF_Font>> Resources::fontTable;
 
-SDL_Texture* Resources::GetImage(std::string file) {
+std::shared_ptr<SDL_Texture> Resources::GetImage(std::string file) {
     auto it = imageTable.find(file);
 
     if (it != imageTable.end()) {
@@ -20,22 +20,34 @@ SDL_Texture* Resources::GetImage(std::string file) {
         return nullptr;
     }
 
-    imageTable[file] = texture;
+    std::shared_ptr<SDL_Texture> sharedTexture(
+            texture,
+            [] (SDL_Texture* t) { SDL_DestroyTexture(t); }
+            );
 
-    return texture;
+    imageTable[file] = sharedTexture;
+    return sharedTexture;
 }
 
 void Resources::ClearImages() {
-    for (auto& pair : imageTable) {
-        if (pair.second != nullptr) {
-            SDL_DestroyTexture(pair.second);
+    auto it = imageTable.begin();
+    while (it != imageTable.end()) {
+        if (it->second.use_count() == 1) {
+            it = imageTable.erase(it);
+        } else {
+            ++it;
         }
     }
+    //for (auto& pair : imageTable) {
+    //    if (pair.second != nullptr) {
+    //        SDL_DestroyTexture(pair.second);
+    //    }
+    //}
 
-    imageTable.clear();
+    //imageTable.clear();
 }
 
-Mix_Music* Resources::GetMusic(std::string file) {
+std::shared_ptr<Mix_Music> Resources::GetMusic(std::string file) {
     auto it = musicTable.find(file);
 
     if (it != musicTable.end()) {
@@ -49,20 +61,34 @@ Mix_Music* Resources::GetMusic(std::string file) {
         return nullptr;
     }
 
-    musicTable[file] = music;
+    std::shared_ptr<Mix_Music> sharedMusic(
+            music,
+            [] (Mix_Music* m) { Mix_FreeMusic(m); }
+            );
 
-    return music;
+
+    musicTable[file] = sharedMusic;
+
+    return sharedMusic;
 }
 
 void Resources::ClearMusic() {
-    for (auto& pair : musicTable) {
-        Mix_FreeMusic(pair.second);
+    auto it = musicTable.begin();
+    while (it != musicTable.end()) {
+        if (it->second.use_count() == 1) {
+            it = musicTable.erase(it);
+        } else {
+            ++it;
+        }
     }
+    //for (auto& pair : musicTable) {
+    //    Mix_FreeMusic(pair.second);
+    //}
 
-    musicTable.clear();
+    //musicTable.clear();
 }
 
-Mix_Chunk* Resources::GetSound(std::string file) {
+std::shared_ptr<Mix_Chunk> Resources::GetSound(std::string file) {
     auto it = soundTable.find(file);
 
     if (it != soundTable.end()) {
@@ -76,20 +102,32 @@ Mix_Chunk* Resources::GetSound(std::string file) {
         return nullptr;
     }
 
-    soundTable[file] = chunk;
+    std::shared_ptr<Mix_Chunk> sharedChunk(
+            chunk,
+            [] (Mix_Chunk* c) { Mix_FreeChunk(c); }
+            );
 
-    return chunk;
+    soundTable[file] = sharedChunk;
+    return sharedChunk;
 }
 
 void Resources::ClearSounds() {
-    for (auto& pair : soundTable) {
-        Mix_FreeChunk(pair.second);
+    auto it = soundTable.begin();
+    while (it != soundTable.end()) {
+        if (it->second.use_count() == 1) {
+            it = soundTable.erase(it);
+        } else {
+            ++it;
+        }
     }
+    //for (auto& pair : soundTable) {
+    //    Mix_FreeChunk(pair.second);
+    //}
 
-    soundTable.clear();
+    //soundTable.clear();
 }
 
-TTF_Font* Resources::GetFont(std::string file, int size) {
+std::shared_ptr<TTF_Font> Resources::GetFont(std::string file, int size) {
     std::string key = file + std::to_string(size);
 
     auto it = fontTable.find(key);
@@ -103,13 +141,26 @@ TTF_Font* Resources::GetFont(std::string file, int size) {
         return nullptr;
     }
 
-    fontTable[key] = font;
-    return font;
+    std::shared_ptr<TTF_Font> sharedFont(
+            font,
+            [] (TTF_Font* f) { TTF_CloseFont(f); }
+            );
+
+    fontTable[key] = sharedFont;
+    return sharedFont;
 }
 
 void Resources::ClearFonts() {
-    for (auto& pair : fontTable) {
-        TTF_CloseFont(pair.second);
+    auto it = fontTable.begin();
+    while (it != fontTable.end()) {
+        if (it->second.use_count() == 1) {
+            it = fontTable.erase(it);
+        } else {
+            ++it;
+        }
     }
-    fontTable.clear();
+    //for (auto& pair : fontTable) {
+    //    TTF_CloseFont(pair.second);
+    //}
+    //fontTable.clear();
 }

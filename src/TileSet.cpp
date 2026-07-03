@@ -8,7 +8,7 @@ TileSet::TileSet(int tileWidth, int tileHeight, std::string file)
         }
         else {
             int imageWidth, imageHeight;
-            SDL_QueryTexture(tileSet.GetTexture(), nullptr, nullptr, &imageWidth, &imageHeight);
+            SDL_QueryTexture(tileSet.GetTexture().get(), nullptr, nullptr, &imageWidth, &imageHeight);
 
             int columns = imageWidth / tileWidth;
             int rows = imageHeight / tileHeight;

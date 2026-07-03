@@ -18,7 +18,7 @@ void Music::Play(int times){
     
     Mix_VolumeMusic(3);
 
-    Mix_PlayMusic(music, times);
+    Mix_PlayMusic(music.get(), times);
 }
 
 void Music::Stop(int msToStop){

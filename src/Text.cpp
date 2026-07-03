@@ -41,15 +41,15 @@ void Text::RemakeTexture() {
     SDL_Surface* surface = nullptr;
     switch (style) {
         case SOLID:
-            surface = TTF_RenderText_Solid(font, text.c_str(), color);
+            surface = TTF_RenderText_Solid(font.get(), text.c_str(), color);
             break;
         case SHADED: {
             SDL_Color bg = {0, 0, 0, 255};
-            surface = TTF_RenderText_Shaded(font, text.c_str(), color, bg);
+            surface = TTF_RenderText_Shaded(font.get(), text.c_str(), color, bg);
             break;
                      }
         case BLENDED:
-            surface = TTF_RenderText_Blended(font, text.c_str(), color);
+            surface = TTF_RenderText_Blended(font.get(), text.c_str(), color);
             break;
     }
 

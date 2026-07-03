@@ -22,9 +22,10 @@ void Sprite::Open(std::string file){
 
     if (texture == nullptr){
         printf("Erro ao carregar imagem: %s\n", SDL_GetError());
+        return;
     }
 
-    SDL_QueryTexture(texture, nullptr, nullptr, &width, &height);
+    SDL_QueryTexture(texture.get(), nullptr, nullptr, &width, &height);
 
     SetClip(0, 0, width / frameCountW, height / frameCountH);
 
@@ -55,7 +56,7 @@ void Sprite::Render(int x, int y, int w, int h, float angle){
 
     SDL_RenderCopyEx(
         Game::GetInstance().GetRenderer(), 
-        texture,
+        texture.get(),
         &clipRect, 
         &dstrect,
         angle,
