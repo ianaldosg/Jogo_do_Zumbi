@@ -61,26 +61,23 @@ int Bullet::GetDamage() {
 
 void Bullet::NotifyCollision(GameObject& other) {
     // Balas não se destroem
-    Bullet* otherBullet = (Bullet*)other.GetComponent<Bullet>();
-    if (otherBullet != nullptr) {
-        return;
-    }
+    if (other.GetComponent<Bullet>() != nullptr) return;
 
     // Pega Components
-    Character* character = (Character*)other.GetComponent<Character>();
-    Component* zombie = other.GetComponent<Zombie>();
+    Character* character = other.GetComponent<Character>();
+    Zombie* zombie = other.GetComponent<Zombie>();
 
-    // Ignora Character se destinada a ele
-    if (this->targetsPlayer) {
-        if (zombie != nullptr || (Character::player != nullptr && character != Character::player)) {
-            return; 
-        }
-    }
+    // Bullet de Inimigo não afeta Zombie
+    if (targetsPlayer && zombie != nullptr) return;
+    // Zombie morto Bullet atravessa
+    if (zombie != nullptr && zombie->IsDead()) return;
 
     if (character != nullptr) {
+        // Alvo
+        bool isPlayer = (character == Character::player);
         // Checagem de friendly fire
-        if (targetsPlayer && character != Character::player) return;
-        if (!targetsPlayer && character == Character::player) return;
+        if (targetsPlayer && !isPlayer) return;
+        if (!targetsPlayer && isPlayer) return;
 
         // Ignora Corpo Morto
         if (character->GetHP() <= 0) return;
