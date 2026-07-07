@@ -12,7 +12,7 @@
 #include <algorithm>
 #include <vector>
 
-StageState::StageState() : State() {}
+StageState::StageState() : State(),tileSet(nullptr) {}
 
 StageState::~StageState() {}
 
@@ -107,7 +107,7 @@ void StageState::Start() {
     //Criando TileMap
     GameObject* mapObject = new GameObject();
 
-    TileSet* tileSet = new TileSet(64, 64, "Recursos/img/Tileset.png");
+    tileSet = new TileSet(64, 64, "Recursos/img/Tileset.png");
 
     TileMap* tileMap = new TileMap(*mapObject, "Recursos/map/map.txt", tileSet);
 

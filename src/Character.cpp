@@ -19,7 +19,6 @@ Character::Character(GameObject& associated, std::string sprite) : Component(ass
 
     speed = Vec2(0, 0);
 
-    //associated.AddComponent(new SpriteRenderer(associated, sprite));
     SpriteRenderer* sr = new SpriteRenderer(
             associated,
             sprite,
@@ -57,25 +56,32 @@ void Character::Update(float dt) {
     speed = Vec2(0,0);
 
     // Fila de Comandos
-    // VOLTAR AQUI NEVER NESTING!!!
     while (!taskQueue.empty()) {
         Command task = taskQueue.front();
         taskQueue.pop();
+        switch (task.type) {
+            case Command::MOVE: 
+                {
+                    Vec2 currentPos(associated.box.x, associated.box.y);
+                    Vec2 dir = task.pos - currentPos;
 
-        if (task.type == Command::MOVE) {
-            Vec2 dir = task.pos - Vec2(associated.box.x, associated.box.y);
+                    if (dir.Magnitude() > 2.0f) {
+                        speed = dir.Normalizar() * linearSpeed;
+                    }
+                    break;
+                }
+            case Command::SHOOT:
+                {
+                    if (auto gunPtr = gun.lock()) {
+                        if (Gun* g = gunPtr->GetComponent<Gun>()) {
+                            g->Shoot(task.pos);
+                        }
+                    }
+                    break;
+                }
 
-            if (dir.Magnitude() > 2.0f) {
-                dir = dir.Normalizar();
-                speed = dir * linearSpeed;
-            }
-        }
-        if (task.type == Command::SHOOT) {
-            auto gunPtr = gun.lock();
-            if (gunPtr) {
-                Gun* g = (Gun*)gunPtr->GetComponent<Gun>();
-                if (g) g->Shoot(task.pos);
-            }
+                default:
+                    break;
         }
     }
 
@@ -164,32 +170,31 @@ void Character::NotifyCollision(GameObject& other) {
     }
 
     // Colisão com Zombie
-    Zombie* zombie = (Zombie*)other.GetComponent<Zombie>();
-    if (zombie != nullptr) {
-        if (zombie->IsDead()) {
+    if (Zombie* zombie = other.GetComponent<Zombie>()) {
+        // Condições de Dano
+        if (zombie->IsDead() || this != Character::player || damageTimer.Get() < 1.0f) {
             return;
         }
-        if (this == Character::player && damageTimer.Get() >= 1.0f) {
-            hp -= 20;
-            damageTimer.Restart();
-            if (hp > 0) {
-                hitSound.Play(1);
-            }
-        }
-        return;
+
+        hp -= 20;
+        damageTimer.Restart();
+
+        if (hp > 0) hitSound.Play(1);
     }
 
     // Colisão com Bullet
-    Bullet* bullet = (Bullet*)other.GetComponent<Bullet>();
-    if (bullet == nullptr) return;
-    
-    // Friendly fire
-    if (bullet->targetsPlayer && this != Character::player) return;
-    if (!bullet->targetsPlayer && this == Character::player) return;
+    if (Bullet* bullet = other.GetComponent<Bullet>()) {
+        bool isPlayer = (this == Character::player);
 
-    hp -= bullet->GetDamage();
-    if (hp > 0) {
-        hitSound.Play(1);
+        // Friendly fire
+        if (bullet->targetsPlayer && !isPlayer)  return;
+        if (!bullet->targetsPlayer && isPlayer)  return;
+
+        // Toma dano
+        hp -= bullet->GetDamage();
+
+        // Som dano
+        if (hp > 0) hitSound.Play(1);
     }
 }
 
