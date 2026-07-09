@@ -3,9 +3,6 @@
 #include "../include/Animator.h"
 #include "../include/Bullet.h"
 #include "../include/Game.h"
-// Testando
-//#include "../include/InputManager.h"
-//#include "../include/Camera.h"
 
 Gun::Gun(GameObject& associated, std::weak_ptr<GameObject> character) : Component(associated),
     shotSound("Recursos/audio/Range.wav"),

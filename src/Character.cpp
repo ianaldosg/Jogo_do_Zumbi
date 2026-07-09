@@ -56,78 +56,20 @@ void Character::Update(float dt) {
     speed = Vec2(0,0);
 
     // Fila de Comandos
-    while (!taskQueue.empty()) {
-        Command task = taskQueue.front();
-        taskQueue.pop();
-        switch (task.type) {
-            case Command::MOVE: 
-                {
-                    Vec2 currentPos(associated.box.x, associated.box.y);
-                    Vec2 dir = task.pos - currentPos;
-
-                    if (dir.Magnitude() > 2.0f) {
-                        speed = dir.Normalizar() * linearSpeed;
-                    }
-                    break;
-                }
-            case Command::SHOOT:
-                {
-                    if (auto gunPtr = gun.lock()) {
-                        if (Gun* g = gunPtr->GetComponent<Gun>()) {
-                            g->Shoot(task.pos);
-                        }
-                    }
-                    break;
-                }
-
-                default:
-                    break;
-        }
-    }
+    ProcessTasks();
 
     // Movimento
     associated.box.x += speed.x * dt;
     associated.box.y += speed.y * dt;
 
     // Animações vivo
-    if (hp > 0) {
-        if (speed.Magnitude() > 0) {
-            if (speed.x < 0) {
-                associated.GetComponent<Animator>()->SetAnimation("walking_left");
-            } else {
-                associated.GetComponent<Animator>()->SetAnimation("walking_right");
-            }
+    UpdateAnimations();
+
+    if (hp<= 0) {
+        // Morto?
+        if (!dead) {
+            HandleDeath();
         }
-        else {
-            associated.GetComponent<Animator>()->SetAnimation("idle");
-        }
-    }
-
-    // Morto?
-    if (hp<= 0 && !dead) {
-        dead = true;
-
-        associated.GetComponent<Animator>()->SetAnimation("dead");
-
-        //Som de Morte
-        deathSound.Play(1);
-
-        //Camera
-        if (this == Character::player) {
-            Camera::Unfollow();
-        }
-
-        // Deleta Gun ao morrer
-        auto gunPtr = gun.lock();
-        if (gunPtr) { gunPtr->RequestDelete(); }
-
-        // Para de se mover após morrer
-        while (!taskQueue.empty()) {
-            taskQueue.pop();
-        }
-    }
-
-    if (hp <= 0) {
         // Contador de Delete
         deathTimer.Update(dt);
         if (deathTimer.Get() > 3.0f) {
@@ -135,24 +77,13 @@ void Character::Update(float dt) {
         }
     }
 
+    damageTimer.Update(dt);
+
     // Sort Y de Character
     associated.sortY = associated.box.y + associated.box.h / 2;
 
-    damageTimer.Update(dt);
-
-    // Limite de Mapa X
-    if (associated.box.x < 640.0f) {
-        associated.box.x = 640.0f;
-    } else if (associated.box.x + associated.box.w > 1920.0f) {
-        associated.box.x = 1920.0f - associated.box.w;
-    }
-
-    // Limite de Mapa Y
-    if (associated.box.y < 512.0f) {
-        associated.box.y = 512.0f;
-    } else if (associated.box.y + associated.box.h > 2048.0f) {
-        associated.box.y = 2048.0f - associated.box.h;
-    }
+    //Limite do Mapa
+    WorldBorder();
 }
 
 void Character::Issue(Command task) {
@@ -204,4 +135,90 @@ int Character::GetHP() {
 
 Vec2 Character::GetCenter() const {
     return Vec2(associated.box.x + (associated.box.w / 2.0f), associated.box.y + (associated.box.h / 2.0f));
+}
+
+void Character::ProcessTasks(){
+    // Fila de Comandos
+    while (!taskQueue.empty()) {
+        Command task = taskQueue.front();
+        taskQueue.pop();
+        switch (task.type) {
+            case Command::MOVE: 
+                {
+                    Vec2 currentPos(associated.box.x, associated.box.y);
+                    Vec2 dir = task.pos - currentPos;
+
+                    if (dir.Magnitude() > 2.0f) {
+                        speed = dir.Normalizar() * linearSpeed;
+                    }
+                    break;
+                }
+            case Command::SHOOT:
+                {
+                    if (auto gunPtr = gun.lock()) {
+                        if (Gun* g = gunPtr->GetComponent<Gun>()) {
+                            g->Shoot(task.pos);
+                        }
+                    }
+                    break;
+                }
+
+                default:
+                    break;
+        }
+    }
+}
+
+void Character::UpdateAnimations(){
+    // Animações vivo
+    if (hp <= 0) return;
+
+    auto* animator = associated.GetComponent<Animator>();
+    if (!animator) return;
+
+    if (speed.Magnitude() > 0) {
+        animator->SetAnimation(speed.x < 0.0f ? "walking_left" : "walking_right");
+    } else {
+        animator->SetAnimation("idle");
+    }
+}
+
+void Character::HandleDeath() {
+    // Morto?
+    dead = true;
+
+    associated.GetComponent<Animator>()->SetAnimation("dead");
+
+    //Som de Morte
+    deathSound.Play(1);
+
+    //Camera
+    if (this == Character::player) {
+        Camera::Unfollow();
+    }
+
+    // Deleta Gun ao morrer
+    auto gunPtr = gun.lock();
+    if (gunPtr) { gunPtr->RequestDelete(); }
+
+    // Para de se mover após morrer
+    while (!taskQueue.empty()) {
+        taskQueue.pop();
+    }
+}
+
+void Character::WorldBorder() {
+    // Limite de Mapa X
+    if (associated.box.x < 640.0f) {
+        associated.box.x = 640.0f;
+    } else if (associated.box.x + associated.box.w > 1920.0f) {
+        associated.box.x = 1920.0f - associated.box.w;
+    }
+
+    // Limite de Mapa Y
+    if (associated.box.y < 512.0f) {
+        associated.box.y = 512.0f;
+    } else if (associated.box.y + associated.box.h > 2048.0f) {
+        associated.box.y = 2048.0f - associated.box.h;
+    }
 }

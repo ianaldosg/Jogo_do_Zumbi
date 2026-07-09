@@ -51,6 +51,12 @@ class Character : public Component {
         Sound deathSound;
         bool dead;
 
+        // Funções de Refatoração
+        void ProcessTasks();
+        void UpdateAnimations();
+        void HandleDeath();
+        void WorldBorder();
+
 };
 
 class Zombie;

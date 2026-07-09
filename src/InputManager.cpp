@@ -27,30 +27,43 @@ void InputManager::Update(){
     SDL_Event event;
 
     while (SDL_PollEvent(&event)) {
-        if (event.type == SDL_QUIT) {
-            quitRequested = true;
-        }
-        else if (event.type == SDL_KEYDOWN) {
-            if (event.key.repeat == 0) {
-                int key = event.key.keysym.sym;
-                keyState[key] = true;
-                keyUpdate[key] = updateCounter;
-            }
-        }
-        else if (event.type == SDL_KEYUP) {
-            int key = event.key.keysym.sym;
-            keyState[key] = false;
-            keyUpdate[key] = updateCounter;
-        }
-        else if (event.type == SDL_MOUSEBUTTONDOWN) {
-            int button = event.button.button;
-            mouseState[button] = true;
-            mouseUpdate[button] = updateCounter;
-        }
-        else if (event.type == SDL_MOUSEBUTTONUP) {
-            int button = event.button.button;
-            mouseState[button] = false;
-            mouseUpdate[button] = updateCounter;
+        switch (event.type) {
+            case SDL_QUIT:
+                quitRequested = true;
+                break;
+
+            case SDL_KEYDOWN:
+                if (event.key.repeat == 0) {
+                    int key = event.key.keysym.sym;
+                    keyState[key] = true;
+                    keyUpdate[key] = updateCounter;
+                }
+                break;
+            case SDL_KEYUP:
+                {
+                    int key = event.key.keysym.sym;
+                    keyState[key] = false;
+                    keyUpdate[key] = updateCounter;
+                    break;
+                }
+
+            case SDL_MOUSEBUTTONDOWN:
+                {
+                    int button = event.button.button;
+                    mouseState[button] = true;
+                    mouseUpdate[button] = updateCounter;
+                    break;
+                }
+            
+            case SDL_MOUSEBUTTONUP:
+                {
+                    int button = event.button.button;
+                    mouseState[button] = false;
+                    mouseUpdate[button] = updateCounter;
+                    break;
+                }
+            default:
+                break;
         }
     }
 }
