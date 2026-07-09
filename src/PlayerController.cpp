@@ -13,8 +13,7 @@ void PlayerController::Update(float dt) {
     InputManager& input = InputManager::GetInstance();
 
     Character* character = associated.GetComponent<Character>();
-    if (!character) return;
-    if (character->GetHP() <= 0) return;
+    if (!character || character->GetHP() <= 0) return;
 
     Vec2 dir(0,0);
 

@@ -87,9 +87,7 @@ void Sprite::SetFrame(int frame) {
     int x = frameX * frameWidth;
     int y = frameY * frameHeight;
 
-    if (x + frameWidth > width || y + frameHeight > height) {
-        return;
-    }
+    if (x + frameWidth > width || y + frameHeight > height) return;
 
     SetClip(x, y, frameWidth, frameHeight);
 }

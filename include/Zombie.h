@@ -34,5 +34,11 @@ class Zombie : public Component{
         bool hit;
         bool left;
         bool dead;
+
+        // Funções de Refatoração
+        void HandleDeath(float dt);
+        void ProcessMovementAndAnimations(float dt);
+        void WorldBorder();
+
 };
 

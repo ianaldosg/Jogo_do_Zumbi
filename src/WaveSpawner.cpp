@@ -63,22 +63,22 @@ void WaveSpawner::Update(float dt) {
     } 
 
     // Controlador de Fim de Wave
-    if (zombieCounter >= wave.zombies && npcCounter >= wave.npcs) {
-        if (Zombie::count == 0 && NPC::count == 0) {
-            currentWave++;
-            zombieCounter = 0;
-            npcCounter = 0;
+    if (zombieCounter < wave.zombies || npcCounter < wave.npcs) return;
+    if (Zombie::count > 0 || NPC::count > 0) return; 
 
-            // Reset Timer
-            zombieCooldownTimer.Restart();
-            npcCooldownTimer.Restart();
+    // Próxima Wave
+    currentWave++;
+    zombieCounter = 0;
+    npcCounter = 0;
 
-            // Acabaram Waves
-            if (currentWave >= (int)waves.size()) {
-                wavesDone = true;
-                associated.RequestDelete();
-            }
-        }
+    // Reset Timer
+    zombieCooldownTimer.Restart();
+    npcCooldownTimer.Restart();
+
+    // Acabaram Waves
+    if (currentWave >= (int)waves.size()) {
+        wavesDone = true;
+        associated.RequestDelete();
     }
 }
 

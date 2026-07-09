@@ -42,62 +42,38 @@ void Zombie::Damage(int damage) {
 
     hitpoins -= damage;
 
+    Animator* animator = associated.GetComponent<Animator>();
     //Animações Morto
     if (hitpoins <= 0) {
         dead = true;
-
         deathSound.Play(1);
-
         deathTimer.Restart();
 
-        Animator* anim =
-            (Animator*) associated.GetComponent<Animator>();
-
-        if (anim != nullptr) {
-            anim->SetAnimation("dead");
+        if (animator) {
+            animator->SetAnimation("dead");
         }
 
-        Collider* col = (Collider*)associated.GetComponent<Collider>();
-        if (col != nullptr) {
-            col->SetScale(Vec2(0.0f, 0.0f));
+        if (Collider* collider = associated.GetComponent<Collider>()) {
+            collider->SetScale(Vec2(0.0f, 0.0f));
         }
+
+        return;
     }
+
     // Animações de Dano
-    else {
-        hit = true;
+    hit = true;
+    hitSound.Play(1);
+    hitTimer.Restart();
 
-        hitSound.Play(1);
-
-        hitTimer.Restart();
-
-        Animator* anim =
-            (Animator*) associated.GetComponent<Animator>();
-
-        if (anim != nullptr) {
-            if (left) {
-                anim->SetAnimation("hit_left");
-            } else {
-                anim->SetAnimation("hit_right");
-            }
-        }
+    if (animator) {
+        animator->SetAnimation(left ? "hit_left" : "hit_right");
     }
 }
 
 void Zombie::Update(float dt) {
     //Deleta o Corpo do Zumbi depois de 5 segundos Morto
     if (dead) {
-        // Atualiza relogio de morte
-        deathTimer.Update(dt);
-
-        if (Camera::GetFocus() == &associated) {
-            Camera::Unfollow();
-        }
-
-        if (deathTimer.Get() >= 5.0f) {
-            associated.RequestDelete();
-        }
-
-        //Parada do loop
+        HandleDeath(dt);
         return;
     }
 
@@ -106,63 +82,17 @@ void Zombie::Update(float dt) {
         hitTimer.Update(dt);
     }
 
-
     // SortY para Zombie
     associated.sortY = associated.box.y + associated.box.h / 2;
 
-    // ARRUMAR ESSA BAGUNÇA
     // Perseguição
     if (Character::player != nullptr && !Character::player->IsCharacterDead()) {
-        Vec2 playerPos = Character::player->GetCenter();
-        Vec2 myPos = associated.box.GetCentroRect();
-        Vec2 direction = playerPos - myPos;
-        direction = direction.Normalizar();
-        //Animação de Walking após 5 segundos do hit
-        Animator* anim =
-            (Animator*) associated.GetComponent<Animator>();
-        if (anim != nullptr) {
-            if (!hit) {
-                // Velocidade Constante
-                float speed = 50.f; // ajuste de velocidade
-                associated.box.x += direction.x * speed * dt;
-                associated.box.y += direction.y * speed * dt;
-
-                if (direction.x < 0) {
-                    left = true;
-                    anim->SetAnimation("walking_left");
-                } else {
-                    left = false;
-                    anim->SetAnimation("walking_right");
-                }
-            }
-            // Stun de Hit
-            else if (hitTimer.Get() >= 0.5f) {
-                hit = false;
-                if (direction.x < 0) {
-                    anim->SetAnimation("walking_left");
-                } else {
-                    anim->SetAnimation("walking_right");
-                }
-            }
-        }
-
-        // Rotaciona para Player
-        associated.angleDeg = atan2(direction.y, direction.x);
+        ProcessMovementAndAnimations(dt);
     }
 
-    // Limite de Mapa X
-    if (associated.box.x < 640.0f) {
-        associated.box.x = 640.0f;
-    } else if (associated.box.x + associated.box.w > 1920.0f) {
-        associated.box.x = 1920.0f - associated.box.w;
-    }
+    //Limite do Mapa
+    WorldBorder();
 
-    // Limite de Mapa Y
-    if (associated.box.y < 512.0f) {
-        associated.box.y = 512.0f;
-    } else if (associated.box.y + associated.box.h > 2048.0f) {
-        associated.box.y = 2048.0f - associated.box.h;
-    }
 }
 
 void Zombie::Render() {}
@@ -181,4 +111,64 @@ void Zombie::NotifyCollision(GameObject& other) {
 }
 Zombie::~Zombie() {
     Zombie::count--;
+}
+
+void Zombie::HandleDeath(float dt) {
+    // Atualiza relogio de morte
+    deathTimer.Update(dt);
+
+    if (Camera::GetFocus() == &associated) {
+        Camera::Unfollow();
+    }
+
+    if (deathTimer.Get() >= 5.0f) {
+        associated.RequestDelete();
+    }
+
+}
+
+void Zombie::ProcessMovementAndAnimations(float dt) {
+    Animator* animator = associated.GetComponent<Animator>();
+    if (!animator) return;
+
+    // Calcula direção até Player
+    Vec2 playerPos = Character::player->GetCenter();
+    Vec2 myPos = associated.box.GetCentroRect();
+    Vec2 direction = (playerPos - myPos).Normalizar();
+
+    // Rotaciona Zombie
+    associated.angleDeg = std::atan2(direction.y, direction.x);
+
+    // Stun
+    if (hit && hitTimer.Get() >= 0.5f) {
+        hit = false;
+    }
+
+    // Verificação de Stun
+    if(hit) return;
+
+    // Movimentação
+    const float speed = 50.0f;
+    associated.box.x += direction.x * speed * dt;
+    associated.box.y += direction.y * speed * dt;
+
+    // Lado do Animation
+    left = (direction.x < 0.0f);
+    animator->SetAnimation(left ? "walking_left" : "walking_right");
+}
+
+void Zombie::WorldBorder() {
+    // Limite de Mapa X
+    if (associated.box.x < 640.0f) {
+        associated.box.x = 640.0f;
+    } else if (associated.box.x + associated.box.w > 1920.0f) {
+        associated.box.x = 1920.0f - associated.box.w;
+    }
+
+    // Limite de Mapa Y
+    if (associated.box.y < 512.0f) {
+        associated.box.y = 512.0f;
+    } else if (associated.box.y + associated.box.h > 2048.0f) {
+        associated.box.y = 2048.0f - associated.box.h;
+    }
 }
